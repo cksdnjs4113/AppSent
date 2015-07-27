@@ -1,0 +1,83 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/drawer_layout"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DDD"
+
+    tools:context="com.example.chanwon.appsent.Activity.OverviewSentiment">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
+    <com.example.chanwon.appsent.Tab.SlidingTabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight = "1"/>
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_bar" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:id="@+id/frameLayout"
+        android:layout_above="@+id/subFrame"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:layout_width="118dp"
+            android:layout_height="wrap_content"
+            android:text="Visualize"
+            android:id="@+id/btnAnalyze"
+            android:layout_gravity="right|center_vertical" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="94dp"
+            android:layout_height="wrap_content"
+            android:text="VIEW ALL"
+            android:id="@+id/btnViewAll"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:background="#FFFFFF"
+        android:id="@+id/subFrame"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+    </FrameLayout>
+
+</RelativeLayout>
+
+<fragment
+    android:id="@+id/fragment_navigation_drawer"
+    android:name="com.example.chanwon.appsent.NavigationDrawer"
+    android:layout_width="@dimen/nav_drawer_width"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    app:layout="@layout/fragment_navigation_drawer"
+    tools:layout="@layout/fragment_navigation_drawer" />
+</android.support.v4.widget.DrawerLayout>
+

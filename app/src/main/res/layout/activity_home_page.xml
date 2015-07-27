@@ -1,18 +1,93 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
 
-    tools:context="com.example.chanwon.appsent.HomePage">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#DDD"
 
-    <include
-        android:id="@+id/app_bar"
-        layout="@layout/app_bar" />
+        tools:context="com.example.chanwon.appsent.Activity.HomePage">
 
-    <TextView
-        android:layout_below="@+id/app_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar" />
 
-</RelativeLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/app_bar" />
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="85dp"
+            android:background="#FFFFFF"
+            android:id="@+id/frameLayout"
+            android:layout_below="@+id/app_bar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:layout_width="115dp"
+                android:layout_height="30dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Advanced Search"
+                android:id="@+id/textView2"
+                android:layout_gravity="right|bottom"
+                android:textColor="#AAA"
+                android:textAlignment="center"
+                android:textSize="13dp" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="101dp"
+                android:layout_height="wrap_content"
+                android:text="Search"
+                android:id="@+id/button"
+                android:layout_gravity="right|top" />
+
+            <EditText
+                android:layout_width="260dp"
+                android:layout_height="51dp"
+                android:id="@+id/editText4"
+                android:layout_gravity="left|top"
+                android:text="Enter App name" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_alignLeft="@+id/frameLayout"
+            android:layout_alignStart="@+id/frameLayout"
+            android:background="#FFFFFF"
+            android:layout_alignRight="@+id/frameLayout"
+            android:layout_alignEnd="@+id/frameLayout"
+            android:layout_below="@+id/frameLayout">
+
+            <Button
+                android:layout_width="95dp"
+                android:layout_height="wrap_content"
+                android:text="Analyze!"
+                android:id="@+id/btnAnal"
+                android:layout_gravity="right|bottom" />
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/fragment_navigation_drawer"
+        android:name="com.example.chanwon.appsent.NavigationDrawer"
+        android:layout_width="@dimen/nav_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:layout="@layout/fragment_navigation_drawer"
+        tools:layout="@layout/fragment_navigation_drawer" />
+</android.support.v4.widget.DrawerLayout>
+

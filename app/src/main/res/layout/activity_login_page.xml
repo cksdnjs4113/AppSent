@@ -3,9 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backrepeat"
-    tools:context="com.example.chanwon.appsent.LoginPage">
+    tools:context="com.example.chanwon.appsent.Activity.LoginPage">
 
-
+    <View
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:background="#000000"
+        android:layout_below="@+id/btnLogin"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/editText3"
+        android:layout_alignBottom="@+id/textView3" />
     <EditText
         android:id="@+id/editText"
         android:layout_width="wrap_content"
@@ -14,7 +21,8 @@
         android:layout_alignLeft="@+id/editText2"
         android:layout_alignStart="@+id/editText2"
         android:ems="10"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:text="\@example.com" />
 
     <EditText
         android:id="@+id/editText2"
@@ -23,7 +31,8 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:text="Password" />
 
     <Button
         android:id="@+id/btnLogin"
@@ -41,8 +50,8 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="PASSWORD"
+        android:layout_marginTop="8dp"
+        android:text="    PASSWORD"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@+id/btnLogin"
         android:layout_alignLeft="@+id/btnLogin"
@@ -54,7 +63,9 @@
         android:layout_height="wrap_content"
         android:text="REGISTER"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_alignTop="@+id/textView3"
+        android:layout_marginRight="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_alignBottom="@+id/editText3"
         android:layout_alignRight="@+id/editText2"
         android:layout_alignEnd="@+id/editText2" />
 
