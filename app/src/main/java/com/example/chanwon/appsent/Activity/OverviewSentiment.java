@@ -22,7 +22,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chanwon.appsent.Analytics.emotionTool;
 import com.example.chanwon.appsent.DAO.DatabaseHelper;
+import com.example.chanwon.appsent.Holder.emotionTable;
 import com.example.chanwon.appsent.NavigationDrawer;
 import com.example.chanwon.appsent.R;
 import com.example.chanwon.appsent.Tab.SlidingTabLayout;
@@ -36,6 +38,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Highlight;
 import com.github.mikephil.charting.utils.PercentFormatter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 //import com.example.chanwon.appsent.Analytics.SentimentTool;
@@ -301,7 +304,7 @@ public class OverviewSentiment extends ActionBarActivity {
         PieChart mChart;
 
 
-        private String[] xData = {"Positive", "Neutral", "Negative"};
+        private String[] xData = {};
         private Float[] yData = {};
         DatabaseHelper mydb;
 
@@ -333,9 +336,150 @@ public class OverviewSentiment extends ActionBarActivity {
                 if (bundle.getInt("position") == 0) {
                     graphMethod();
                 }
+                if (bundle.getInt("position") == 1){
+                    try {
+                        graphMethodForEmotion();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
 
             }
             return layout;
+        }
+        public void graphMethodForEmotion() throws IOException {
+            {
+                //textView.setText("This page is " + bundle.getInt("position"));
+                mChart = new PieChart(getActivity());
+                graphpage.addView(mChart);
+                graphpage.setBackgroundColor(Color.WHITE);
+
+                //configure pie chart
+                mChart.setUsePercentValues(true);
+
+                //enable hole and conigure
+
+                mChart.setDrawHoleEnabled(true);
+                mChart.setHoleColorTransparent(true);
+                mChart.setHoleRadius(40);
+                mChart.setTransparentCircleRadius(30);
+                mChart.setCenterText("OVERALL \n SENTIMENT");
+
+
+                //enable rotation of the chart by touch
+                mChart.setRotationAngle(0);
+                mChart.setRotationEnabled(true);
+
+                //set a chart value selected listnerer
+                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+                        //display msg when value selected
+                        if (entry == null) {
+                            return;
+
+                        }
+                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" + entry.getVal(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNothingSelected() {
+
+                    }
+
+                });
+                ///
+
+
+                ArrayList array = new ArrayList();
+                Cursor res1 = mydb.getAllData();
+                if (res1.getCount() == 0) {
+                    //show message
+                    showMessage("Error", "Nothing saved");
+                }
+                while (res1.moveToNext()) {
+                    array.add(res1.getString(1));
+                }
+                String[] bob = new String[]{"-file"};
+                emotionTool hi = new emotionTool();
+                emotionTable answer = hi.getResult(array);
+
+                String happyNumber = answer.getHappy();
+                String sadNumber = answer.getSad();
+                String angerNumber = answer.getAnger();
+                String fearNumber = answer.getFear();
+                String disgustNumber = answer.getDisgust();
+                String supriseNumber = answer.getSuprise();
+                String noemoNumber = answer.getNoemo();
+
+
+                Float happyNumber1 = Float.parseFloat(happyNumber);
+                Float sadNumber1 = Float.parseFloat(sadNumber);
+                Float angerNumber1 = Float.parseFloat(angerNumber);
+                Float fearNumber1 = Float.parseFloat(fearNumber);
+                Float disgustNumber1 = Float.parseFloat(disgustNumber);
+                Float supriseNumber1 = Float.parseFloat(supriseNumber);
+                Float noemoNumber1 = Float.parseFloat(noemoNumber);
+                xData = new String[]{"Happy", "Sad", "Anger", "Fear", "Disgust", "Surprise", "No Emotion"};
+                yData = new Float[]{happyNumber1, sadNumber1, angerNumber1,fearNumber1,disgustNumber1,supriseNumber1,noemoNumber1};
+
+
+                ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+                for (int i = 0; i < yData.length; i++)
+                    yVals1.add(new Entry(yData[i], i));
+                ArrayList<String> xVals = new ArrayList<String>();
+
+                for (int i = 0; i < xData.length; i++)
+                    xVals.add(xData[i]);
+
+                //create pie data set
+
+                PieDataSet dataSet = new PieDataSet(yVals1, " ");
+                dataSet.setSliceSpace(3);
+                dataSet.setSelectionShift(5);
+
+                //add many colors
+                ArrayList<Integer> colors = new ArrayList<Integer>();
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
+
+                colors.add(ColorTemplate.getHoloBlue());
+                dataSet.setColors(colors);
+
+                //instantiate pie data object now
+
+                PieData data = new PieData(xVals, dataSet);
+                data.setValueFormatter(new PercentFormatter());
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.GRAY);
+
+                mChart.setData(data);
+
+                //undo all highlights
+                mChart.highlightValues(null);
+
+                //update pie chart
+                mChart.invalidate();
+
+
+                ///
+
+                //customize Legends
+                Legend legit = mChart.getLegend();
+                legit.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+                legit.setXEntrySpace(7);
+                legit.setYEntrySpace(5);
+
+            }
         }
 
         public void graphMethod() {
@@ -408,6 +552,7 @@ public class OverviewSentiment extends ActionBarActivity {
                 Float neutralNumber1 = Float.parseFloat(neutralNumber);
                 Float negativeNumber1 = Float.parseFloat(negativeNumber);
 
+                xData = new String[]{"POSITIVE", "NEUTRAL", "NEGATIVE"};
                 yData = new Float[]{positiveNumber1, neutralNumber1, negativeNumber1};
 
 

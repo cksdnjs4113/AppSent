@@ -2,7 +2,6 @@ package com.example.chanwon.appsent;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.chanwon.appsent.Activity.OverviewSentiment;
 import com.example.chanwon.appsent.MenuItem.Information;
 import com.example.chanwon.appsent.MenuItem.VivzAdapter;
 
@@ -26,7 +24,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NavigationDrawer extends Fragment implements VivzAdapter.ClickListner {
+public class NavigationDrawer extends Fragment {
     private RecyclerView recyclerView;
     public static final String PREF_FILE_NAME = "testpref";
     public static final String KEY_USER_LEARNED_DRAWER = "user_learned_drawer";
@@ -61,13 +59,11 @@ public class NavigationDrawer extends Fragment implements VivzAdapter.ClickListn
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
-
         adapter = new VivzAdapter(getActivity(), getData());
-        adapter.setClickListner(this);
 
         recyclerView.setAdapter(adapter);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 
         return layout;
     }
@@ -135,9 +131,5 @@ public class NavigationDrawer extends Fragment implements VivzAdapter.ClickListn
         return sharedPreferences.getString(preferenceName, defaultValue);
     }
 
-    @Override
-    public void itemClicked(View view, int position) {
-        startActivity(new Intent(getActivity(), OverviewSentiment.class));
-    }
 
 }

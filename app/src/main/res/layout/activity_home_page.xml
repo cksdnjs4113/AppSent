@@ -62,7 +62,7 @@
 
         <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:layout_height="350dp"
             android:layout_alignLeft="@+id/frameLayout"
             android:layout_alignStart="@+id/frameLayout"
             android:background="#FFFFFF"

@@ -3,7 +3,6 @@ package com.example.chanwon.appsent.MenuItem;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,32 +52,25 @@ public class VivzAdapter extends RecyclerView.Adapter<VivzAdapter.MyViewHolder> 
         return data.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MyViewHolder extends RecyclerView.ViewHolder{
         TextView title;
         ImageView icon;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
             title = (TextView) itemView.findViewById(R.id.listText);
             icon = (ImageView) itemView.findViewById(R.id.listIcon);
-            title.setOnClickListener(this);
-            icon.setOnClickListener(this);
+
 
         }
 
-        @Override
-        public void onClick(View v) {
-           context.startActivity(new Intent(context, OverviewSentiment.class));
-            if(clickListner!=null){
-                clickListner.itemClicked(v, getPosition());
-            }
-        }
     }
-    public interface ClickListner{
+
+    public interface ClickListner {
         public void itemClicked(View view, int position);
     }
-    public void setClickListner(VivzAdapter.ClickListner clickListner){
+
+    public void setClickListner(VivzAdapter.ClickListner clickListner) {
         this.clickListner = clickListner;
     }
 }
