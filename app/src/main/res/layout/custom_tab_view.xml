@@ -14,5 +14,7 @@
         android:id="@+id/tabText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom|center" />
+        android:gravity="bottom|center"
+        android:textColor="#FFFFFF"
+        android:background="#FFFFFF"/>
 </LinearLayout>

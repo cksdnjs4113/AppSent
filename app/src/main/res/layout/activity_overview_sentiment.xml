@@ -17,46 +17,21 @@ android:layout_height="match_parent">
         android:id="@+id/app_bar"
         layout="@layout/app_bar" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.03">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="APP TITLE: OTAGO UNIVERSITY"
-            android:id="@+id/textView5"
-            android:layout_gravity="center" />
-    </FrameLayout>
 
     <com.example.chanwon.appsent.Tab.SlidingTabLayout
         android:id="@+id/tabs"
-        android:background="#FFCDD2"
+        android:background="#F44336"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#000000"
+        android:background="#FFFFFF"
         android:layout_weight = "1"/>
 
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TIMELINE"
-            android:id="@+id/button2"
-            android:layout_gravity="center" />
-    </FrameLayout>
 
 </LinearLayout>
 

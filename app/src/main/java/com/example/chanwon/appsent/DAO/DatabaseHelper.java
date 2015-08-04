@@ -10,10 +10,13 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by CHANWON on 7/24/2015.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DB_NAME = "sentiment.db";
-    public static final String TB_NAME = "sentiment_table";
+    public static final String DB_NAME = "sentence.db";
+    public static final String TB_NAME = "sentence_table";
     public static final String COL1 = "ID";
     public static final String COL2 = "SENTENCE";
+    public static final String COL3 = "SENTIMENT";
+    public static final String COL4 = "EMOTION";
+    public static final String COL5 = "SDATE";
 
 
     public DatabaseHelper(Context context) {
@@ -23,42 +26,70 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("CREATE TABLE " + TB_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, SENTENCE TEXT)");
+        db.execSQL("CREATE TABLE " + TB_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, SENTENCE TEXT, SENTIMENT TEXT, EMOTION TEXT, SDATE DATE)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+TB_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TB_NAME);
         onCreate(db);
 
     }
-    public boolean insertData(String sentences){
+
+    public boolean insertData(String sentences, String sentiment, String emotion, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL2,sentences);
+        contentValues.put(COL2, sentences);
+        contentValues.put(COL3, sentiment);
+        contentValues.put(COL4, emotion);
+        contentValues.put(COL5, date);
         long result = db.insert(TB_NAME, null, contentValues);
-        if(result == -1) {
+        if (result == -1) {
             return false;
-        }
-        else{
+        } else {
             return true;
 
         }
     }
-    public Cursor getAllData(){
+
+
+    public Integer deleteData(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from " + TB_NAME, null);
-        return res;
+        return db.delete(TB_NAME, "ID = ?", new String[]{id});
+
     }
-    public Cursor getSelectedData(String id){
+
+    public Cursor getTimeSentiment(String type) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from " + TB_NAME + " where ID =" + id, null);
+        Cursor res = null;
+        if (type.equals("sevendays")) {
+            res = db.rawQuery("select sdate, count(*) from sentence_table where sdate between " +
+                    "'2006-05-01' and '2006-05-07' and sentiment = 'neutral' group by sdate", null);
+        }
         return res;
     }
 
-    public Integer deleteData (String id){
+    public Cursor countSentiment() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TB_NAME, "ID = ?", new String[] {id});
+        Cursor res = db.rawQuery("select sentiment, count(sentiment) from " + TB_NAME + " group by sentiment", null);
+        return res;
+    }
 
+    public Cursor countEmotion() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select emotion, count(emotion) from " + TB_NAME + " group by emotion", null);
+        return res;
+    }
+
+    public Cursor countPosSentEmot() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select emotion, count(emotion) from " + TB_NAME + " where sentiment = 'positive' group by emotion", null);
+        return res;
+    }
+
+    public Cursor countNegSentEmot() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select emotion, count(emotion) from " + TB_NAME + " where sentiment = 'negative' group by emotion", null);
+        return res;
     }
 }

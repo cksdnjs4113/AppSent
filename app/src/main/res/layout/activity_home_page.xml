@@ -68,7 +68,8 @@
             android:background="#FFFFFF"
             android:layout_alignRight="@+id/frameLayout"
             android:layout_alignEnd="@+id/frameLayout"
-            android:layout_below="@+id/frameLayout">
+            android:layout_below="@+id/frameLayout"
+            android:layout_alignParentBottom="true">
 
             <Button
                 android:layout_width="95dp"
