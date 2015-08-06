@@ -1,11 +1,13 @@
 package com.example.chanwon.appsent.Activity;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.widget.FrameLayout;
 
+import com.example.chanwon.appsent.DAO.DatabaseHelper;
 import com.example.chanwon.appsent.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -26,66 +28,126 @@ public class TimeLinePopup extends Activity {
 
     private FrameLayout mainLayout;
     private LineChart mLineChart;
+    DatabaseHelper mydb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.popupwindow);
+
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         int width = dm.widthPixels;
         int height = dm.heightPixels;
-        getWindow().setLayout((int) (width * .9), (int) (height * .85));
+
+        getWindow().setLayout((int) (width * .9), (int) (height * .75));
+
         mainLayout = (FrameLayout) findViewById(R.id.timeLineLayout);
+
 
         //create line chart
         mLineChart = new LineChart(this);
         //add to main layout
         mainLayout.addView(mLineChart);
+
         // customize line chart
         mLineChart.setDescription("");
         mLineChart.setNoDataTextDescription("No data for the moment");
+
         //enable value highlighting
         mLineChart.setHighlightEnabled(true);
+
         //enable touch gesture
         mLineChart.setTouchEnabled(true);
         //enable scaling and dragging
         mLineChart.setDragEnabled(true);
         mLineChart.setScaleEnabled(true);
         mLineChart.setDrawGridBackground(false);
+
         //enable pich zoom to avoid scaling x and y axis seprately
+
         mLineChart.setPinchZoom(true);
+
         //alternative background color
+
         mLineChart.setBackgroundColor(Color.WHITE);
+
         //now, we word on data
         LineData data = new LineData();
         data.setValueTextColor(Color.BLACK);
+
         //add data to line chart
+
         mLineChart.setData(data);
+
         //get legend object
         Legend u = mLineChart.getLegend();
+
         //customize legend
         u.setForm(Legend.LegendForm.LINE);
         u.setTextColor(Color.BLACK);
+
         XAxis x1 = mLineChart.getXAxis();
         x1.setTextColor(Color.BLACK);
         x1.setDrawGridLines(true);
         x1.setAvoidFirstLastClipping(true);
+
+
         YAxis y1 = mLineChart.getAxisLeft();
         y1.setTextColor(Color.BLACK);
+
         //Y AXIS VALUE
         y1.setAxisMaxValue(100f);
+        //
         y1.setDrawGridLines(true);
+
         YAxis y12 = mLineChart.getAxisRight();
         y12.setEnabled(false);
+        AddEntry();
+
+
+    }
+
+    private void AddEntry() {
+
         ArrayList<String> xVals = new ArrayList<String>();
-        String[] xData = {"Jan", "Feb", "Mar", "Apr", "May"};
+        String[] xData = {"Jan", "Feb", "Mar", "Apr", "May", "1", "2"};
         for (int i = 0; i < xData.length; i++)
             xVals.add(xData[i]);
-        float[] yData = {50, 60, 70, 40, 60};
-        float[] yData1 = {30, 40, 40, 50, 30};
-        float[] yData2 = {60, 70, 30, 30, 70};
+
+//        Float counthappy = 0f;
+//        Float countsad = 0f;
+//        Float countanger = 0f;
+//        Float countfear = 0f;
+//        Float countdisgust = 0f;
+//        Float countsurprise = 0f;
+//        Float countnoemo = 0f;
+//
+//        Cursor res1 = mydb.getTimeSentiment("positive");
+//        while (res1.moveToNext()) {
+//            if (res1.getString(0).equals("2006-05-01")) {
+//                counthappy = Float.parseFloat(res1.getString(1));
+//            } else if (res1.getString(0).equals("2006-05-02")) {
+//                countsad = Float.parseFloat(res1.getString(1));
+//            } else if (res1.getString(0).equals("2006-05-03")) {
+//                countanger = Float.parseFloat(res1.getString(1));
+//            } else if (res1.getString(0).equals("2006-05-04")) {
+//                countfear = Float.parseFloat(res1.getString(1));
+//            } else if (res1.getString(0).equals("2006-05-05")) {
+//                countdisgust = Float.parseFloat(res1.getString(1));
+//            } else if (res1.getString(0).equals("2006-05-06")) {
+//                countsurprise = Float.parseFloat(res1.getString(1));
+//            } else if (res1.getString(0).equals("2006-05-07")) {
+//                countnoemo = Float.parseFloat(res1.getString(1));
+//            }
+//        }
+//        float[] yData = new float[]{counthappy, countsad, countanger, countfear, countdisgust, countsurprise, countnoemo};
+        float[] yData = {30, 40, 50, 20, 60, 40, 30};
+        float[] yData1 = {30, 40, 40, 50, 30, 20, 2};
+        float[] yData2 = {60, 70, 30, 30, 70, 20, 2};
         ArrayList<Entry> yVals1 = new ArrayList<Entry>();
         ArrayList<Entry> yVals2 = new ArrayList<Entry>();
         ArrayList<Entry> yVals3 = new ArrayList<Entry>();

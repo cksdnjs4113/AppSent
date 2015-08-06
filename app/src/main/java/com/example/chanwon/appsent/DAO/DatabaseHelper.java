@@ -61,11 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getTimeSentiment(String type) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = null;
-        if (type.equals("sevendays")) {
-            res = db.rawQuery("select sdate, count(*) from sentence_table where sdate between " +
-                    "'2006-05-01' and '2006-05-07' and sentiment = 'neutral' group by sdate", null);
-        }
+        Cursor res = db.rawQuery("select sdate, count(*) from "+TB_NAME+" where sdate between '2006-05-01' and '2006-05-07' group by sdate", null);
         return res;
     }
 

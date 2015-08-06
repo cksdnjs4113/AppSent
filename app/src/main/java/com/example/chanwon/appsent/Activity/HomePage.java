@@ -10,9 +10,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.chanwon.appsent.Analytics.SentimentTool;
 import com.example.chanwon.appsent.DAO.DatabaseHelper;
 import com.example.chanwon.appsent.NavigationDrawer;
 import com.example.chanwon.appsent.R;
+import com.example.chanwon.appsent.emotion.util.PropertiesManager;
+import com.example.chanwon.appsent.emotion.util.TestData;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 
 public class HomePage extends ActionBarActivity {
@@ -49,7 +58,17 @@ public class HomePage extends ActionBarActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        TestData hi1 = new TestData();
+                        ArrayList testing = hi1.getchanwonAffectWords();
+
+                        SentimentTool hi = new SentimentTool();
+                        try {
+                            SentimentTool.getResult(testing, getApplicationContext());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         startActivity(new Intent(HomePage.this, OverviewSentiment.class));
+
                     }
                 }
         );

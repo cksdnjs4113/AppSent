@@ -24,9 +24,9 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.android.support:recyclerview-v7:22.0.0'
-    //    compile files('C:/Users/CHANWON/AndroidStudioProjects/AppSent/libs/ejml-0.23.jar')
+    compile files('C:/Users/CHANWON/AndroidStudioProjects/AppSent/libs/ejml-0.23.jar')
     compile files('C:/Users/CHANWON/AndroidStudioProjects/AppSent/libs/mpandroidchartlibrary-2-1-0.jar')
-    //    compile files('C:/Users/CHANWON/AndroidStudioProjects/AppSent/libs/stanford-corenlp-3.3.0.jar')
-    //    compile files('C:/Users/CHANWON/AndroidStudioProjects/AppSent/libs/stanford-corenlp-3.3.0-models.jar')
+    compile files('C:/Users/CHANWON/AndroidStudioProjects/AppSent/libs/stanford-corenlp-3.3.0.jar')
+    compile files('C:/Users/CHANWON/AndroidStudioProjects/AppSent/libs/stanford-corenlp-3.3.0-models.jar')
     compile files('C:/Users/CHANWON/AndroidStudioProjects/AppSent/libs/core.jar')
 }
