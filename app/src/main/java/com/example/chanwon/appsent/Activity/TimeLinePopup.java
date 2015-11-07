@@ -114,19 +114,16 @@ public class TimeLinePopup extends Activity {
     private void AddEntry() {
 
         ArrayList<String> xVals = new ArrayList<String>();
-        String[] xData = {"Jan", "Feb", "Mar", "Apr", "May", "1", "2"};
+        String[] xData = {"Jan", "Feb", "Mar"};
         for (int i = 0; i < xData.length; i++)
             xVals.add(xData[i]);
 
 //        Float counthappy = 0f;
 //        Float countsad = 0f;
 //        Float countanger = 0f;
-//        Float countfear = 0f;
-//        Float countdisgust = 0f;
-//        Float countsurprise = 0f;
-//        Float countnoemo = 0f;
 //
 //        Cursor res1 = mydb.getTimeSentiment("positive");
+//
 //        while (res1.moveToNext()) {
 //            if (res1.getString(0).equals("2006-05-01")) {
 //                counthappy = Float.parseFloat(res1.getString(1));
@@ -134,20 +131,12 @@ public class TimeLinePopup extends Activity {
 //                countsad = Float.parseFloat(res1.getString(1));
 //            } else if (res1.getString(0).equals("2006-05-03")) {
 //                countanger = Float.parseFloat(res1.getString(1));
-//            } else if (res1.getString(0).equals("2006-05-04")) {
-//                countfear = Float.parseFloat(res1.getString(1));
-//            } else if (res1.getString(0).equals("2006-05-05")) {
-//                countdisgust = Float.parseFloat(res1.getString(1));
-//            } else if (res1.getString(0).equals("2006-05-06")) {
-//                countsurprise = Float.parseFloat(res1.getString(1));
-//            } else if (res1.getString(0).equals("2006-05-07")) {
-//                countnoemo = Float.parseFloat(res1.getString(1));
 //            }
 //        }
-//        float[] yData = new float[]{counthappy, countsad, countanger, countfear, countdisgust, countsurprise, countnoemo};
-        float[] yData = {30, 40, 50, 20, 60, 40, 30};
-        float[] yData1 = {30, 40, 40, 50, 30, 20, 2};
-        float[] yData2 = {60, 70, 30, 30, 70, 20, 2};
+//        float[] yData = new float[]{counthappy, countsad, countanger};
+        float[] yData = {30, 40, 50};
+        float[] yData1 = {30, 40, 40};
+        float[] yData2 = {60, 70, 30};
         ArrayList<Entry> yVals1 = new ArrayList<Entry>();
         ArrayList<Entry> yVals2 = new ArrayList<Entry>();
         ArrayList<Entry> yVals3 = new ArrayList<Entry>();

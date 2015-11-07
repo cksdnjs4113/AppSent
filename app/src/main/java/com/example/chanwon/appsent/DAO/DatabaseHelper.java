@@ -57,17 +57,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TB_NAME, "ID = ?", new String[]{id});
 
-    }
+}
 
     public Cursor getTimeSentiment(String type) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select sdate, count(*) from "+TB_NAME+" where sdate between '2006-05-01' and '2006-05-07' group by sdate", null);
+        Cursor res = db.rawQuery("select sdate, count(*) from sentence_table where sdate group by sdate", null);
+        System.out.println("###############################################################################################");
+        System.out.println("###############################################################################################");
+        System.out.println("###############################################################################################");
+        System.out.println("###############################################################################################");
+        System.out.println("###############################################################################################");
+        System.out.println(res);
+        System.out.println(res.getString(0));
+        System.out.println("###############################################################################################");
+        System.out.println("###############################################################################################");
+        System.out.println("###############################################################################################");
+        System.out.println("###############################################################################################");
+        System.out.println("###############################################################################################");
         return res;
     }
 
     public Cursor countSentiment() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select sentiment, count(sentiment) from " + TB_NAME + " group by sentiment", null);
+        return res;
+    }
+
+    public Cursor countAllSentences(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("count(*) from " + TB_NAME, null);
         return res;
     }
 

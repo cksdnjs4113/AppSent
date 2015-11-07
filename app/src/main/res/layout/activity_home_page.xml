@@ -78,6 +78,13 @@
                 android:id="@+id/btnAnal"
                 android:layout_gravity="right|bottom" />
 
+            <Button
+                android:layout_width="95dp"
+                android:layout_height="wrap_content"
+                android:text="INSERT"
+                android:id="@+id/buttonInsert"
+                android:layout_gravity="center_horizontal|bottom" />
+
         </FrameLayout>
 
     </RelativeLayout>

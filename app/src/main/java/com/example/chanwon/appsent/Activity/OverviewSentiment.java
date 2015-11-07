@@ -213,8 +213,10 @@ public class OverviewSentiment extends ActionBarActivity {
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            startActivity(new Intent(getActivity(), TimeLinePopup.class));
-
+                            Bundle bundle = getArguments();
+                            if (bundle.getInt("position") == 0) {
+                                startActivity(new Intent(getActivity(), TimeLinePopup.class));
+                            }
                         }
                     }
             );
