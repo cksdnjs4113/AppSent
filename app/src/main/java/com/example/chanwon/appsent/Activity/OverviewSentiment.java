@@ -133,7 +133,7 @@ public class OverviewSentiment extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -199,9 +199,9 @@ public class OverviewSentiment extends ActionBarActivity {
                     }
                 }
                 if (bundle.getInt("position") == 2) {
-                    textView.setText("SENTIMENT & EMOTION");
-                    GraphBoth();
-                    timeline();
+                    textView.setText("Will be updated with new feature..");
+                    //GraphBoth();
+                    //timeline();
                 }
 
             }
@@ -216,6 +216,9 @@ public class OverviewSentiment extends ActionBarActivity {
                             Bundle bundle = getArguments();
                             if (bundle.getInt("position") == 0) {
                                 startActivity(new Intent(getActivity(), TimeLinePopup.class));
+                            }
+                            else if (bundle.getInt("position") == 1) {
+                                startActivity(new Intent(getActivity(), TimelinePopupEmo.class));
                             }
                         }
                     }

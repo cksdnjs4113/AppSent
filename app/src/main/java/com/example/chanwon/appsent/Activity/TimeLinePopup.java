@@ -3,6 +3,7 @@ package com.example.chanwon.appsent.Activity;
 import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.widget.FrameLayout;
@@ -32,7 +33,9 @@ public class TimeLinePopup extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         super.onCreate(savedInstanceState);
+        mydb = new DatabaseHelper(this);
 
 
         setContentView(R.layout.popupwindow);
@@ -114,29 +117,40 @@ public class TimeLinePopup extends Activity {
     private void AddEntry() {
 
         ArrayList<String> xVals = new ArrayList<String>();
-        String[] xData = {"Jan", "Feb", "Mar"};
+        String[] xData = {"Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"};
         for (int i = 0; i < xData.length; i++)
             xVals.add(xData[i]);
 
-//        Float counthappy = 0f;
-//        Float countsad = 0f;
-//        Float countanger = 0f;
-//
-//        Cursor res1 = mydb.getTimeSentiment("positive");
-//
-//        while (res1.moveToNext()) {
-//            if (res1.getString(0).equals("2006-05-01")) {
-//                counthappy = Float.parseFloat(res1.getString(1));
-//            } else if (res1.getString(0).equals("2006-05-02")) {
-//                countsad = Float.parseFloat(res1.getString(1));
-//            } else if (res1.getString(0).equals("2006-05-03")) {
-//                countanger = Float.parseFloat(res1.getString(1));
-//            }
-//        }
-//        float[] yData = new float[]{counthappy, countsad, countanger};
-        float[] yData = {30, 40, 50};
-        float[] yData1 = {30, 40, 40};
-        float[] yData2 = {60, 70, 30};
+        Float countpos = 0f;
+        Float countneg = 0f;
+        Float countneu = 0f;
+
+        Cursor res1 = mydb.getTimeSentiment("positive");
+        Cursor res2 = mydb.getTimeSentiment("negative");
+        Cursor res3 = mydb.getTimeSentiment("neutral");
+
+        while (res1.moveToNext()) {
+            countpos = Float.parseFloat(res1.getString(1));
+        }
+        while (res2.moveToNext()) {
+            countneg = Float.parseFloat(res2.getString(1));
+        }
+        while (res3.moveToNext()) {
+            countneu = Float.parseFloat(res3.getString(1));
+        }
+
+        float overallCount = countneg + countneu + countpos;
+        double overallCount1 = (double) overallCount;
+        double countpos1 = (double) countpos;
+        double countpos2 = (countpos1/overallCount1)*100d;
+        double countneg1 = (double) countneg;
+        double countneg2 = (countneg1/overallCount1)*100d;
+        double countneu1 = (double) countneu;
+        double countneu2 = (countneu1/overallCount1)*100d;
+
+        float[] yData = new float[]{(float) countpos2, 50f, 50f, 20f, 40f, 70f, 20f};
+        float[] yData1 = new float[]{(float) countneg2, 40f, 30f, 70f, 55f, 25f, 60f};
+        float[] yData2 = new float[]{(float) countneu2, 10f, 20f, 10f, 5f, 5f, 20f };
         ArrayList<Entry> yVals1 = new ArrayList<Entry>();
         ArrayList<Entry> yVals2 = new ArrayList<Entry>();
         ArrayList<Entry> yVals3 = new ArrayList<Entry>();

@@ -61,19 +61,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getTimeSentiment(String type) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select sdate, count(*) from sentence_table where sdate group by sdate", null);
-        System.out.println("###############################################################################################");
-        System.out.println("###############################################################################################");
-        System.out.println("###############################################################################################");
-        System.out.println("###############################################################################################");
-        System.out.println("###############################################################################################");
-        System.out.println(res);
-        System.out.println(res.getString(0));
-        System.out.println("###############################################################################################");
-        System.out.println("###############################################################################################");
-        System.out.println("###############################################################################################");
-        System.out.println("###############################################################################################");
-        System.out.println("###############################################################################################");
+        Cursor res = db.rawQuery("select sdate, count(*) from " + TB_NAME + " where sentiment = '"+ type +"'group by sdate", null);
+        return res;
+    }
+    public Cursor getTimeEmotion(String type) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select sdate, count(*) from " + TB_NAME + " where emotion = '"+ type +"'group by sdate", null);
         return res;
     }
 

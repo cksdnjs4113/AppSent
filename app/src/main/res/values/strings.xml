@@ -24,6 +24,6 @@
     <string-array name="tabs">
         <item>SENTIMENT</item>
         <item>EMOTION</item>
-        <item>BOTH</item>
     </string-array>
+    <string name="title_activity_timeline_popup_emo">TimelinePopupEmo</string>
 </resources>
