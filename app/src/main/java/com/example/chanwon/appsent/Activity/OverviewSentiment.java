@@ -31,11 +31,6 @@ import com.example.chanwon.appsent.Tab.SlidingTabLayout;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -43,12 +38,9 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Highlight;
 import com.github.mikephil.charting.utils.PercentFormatter;
-import com.github.mikephil.charting.utils.ValueFormatter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 //import com.example.chanwon.appsent.Analytics.SentimentTool;
 
@@ -215,8 +207,7 @@ public class OverviewSentiment extends ActionBarActivity {
                             Bundle bundle = getArguments();
                             if (bundle.getInt("position") == 0) {
                                 startActivity(new Intent(getActivity(), TimeLinePopup.class));
-                            }
-                            else if (bundle.getInt("position") == 1) {
+                            } else if (bundle.getInt("position") == 1) {
                                 startActivity(new Intent(getActivity(), TimelinePopupEmo.class));
                             }
                         }
@@ -268,33 +259,22 @@ public class OverviewSentiment extends ActionBarActivity {
                 Float countfear = 0f;
                 Float countdisgust = 0f;
                 Float countsurprise = 0f;
-                Float countnoemo = 0f;
-                ArrayList array = new ArrayList();
-                ArrayList array1 = new ArrayList();
+
+
                 Cursor res1 = mydb.countEmotion();
                 while (res1.moveToNext()) {
-                    if (res1.getString(0).equals("happy")) {
-                        counthappy = Float.parseFloat(res1.getString(1));
-                    } else if (res1.getString(0).equals("sad")) {
-                        countsad = Float.parseFloat(res1.getString(1));
-                    } else if (res1.getString(0).equals("anger")) {
-                        countanger = Float.parseFloat(res1.getString(1));
-                    } else if (res1.getString(0).equals("fear")) {
-                        countfear = Float.parseFloat(res1.getString(1));
-                    } else if (res1.getString(0).equals("disgust")) {
-                        countdisgust = Float.parseFloat(res1.getString(1));
-                    } else if (res1.getString(0).equals("surprise")) {
-                        countsurprise = Float.parseFloat(res1.getString(1));
-                    } else if (res1.getString(0).equals("noemo")) {
-                        countnoemo = Float.parseFloat(res1.getString(1));
-                    }
+                    counthappy = res1.getFloat(0);
+                    countsad = res1.getFloat(1);
+                    countanger = res1.getFloat(2);
+                    countfear = res1.getFloat(3);
+                    countdisgust = res1.getFloat(4);
+                    countsurprise = res1.getFloat(5);
                 }
 
 
-                xData = new String[]{"Happy", "Sad", "Anger", "Fear", "Disgust", "Surprise", "No Emotion"};
-                yData = new Float[]{counthappy, countsad, countanger, countfear, countdisgust, countsurprise, countnoemo};
-                mChart.setCenterText(new Integer((int) (counthappy + countsad + countanger+ countfear+ countdisgust+ countsurprise+
-                        countnoemo)) + "\nReviews");
+                xData = new String[]{"Happy", "Sad", "Anger", "Fear", "Disgust", "Surprise"};
+                yData = new Float[]{counthappy, countsad, countanger, countfear, countdisgust, countsurprise};
+                mChart.setCenterText(new Integer((int) (counthappy + countsad + countanger + countfear + countdisgust)) + "\nReviews");
                 mChart.setCenterTextColor(ColorTemplate.getHoloBlue());
                 mChart.setCenterTextSize(23);
                 mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
@@ -366,7 +346,7 @@ public class OverviewSentiment extends ActionBarActivity {
                             return;
 
                         }
-                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" +new Integer((int) entry.getVal()), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" + new Integer((int) entry.getVal()), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -376,24 +356,22 @@ public class OverviewSentiment extends ActionBarActivity {
 
                 });
                 ///
-
+                Float countvpos = 0f;
+                Float countvneg = 0f;
                 Float countpos = 0f;
                 Float countneu = 0f;
                 Float countneg = 0f;
                 Cursor res1 = mydb.countSentiment();
                 while (res1.moveToNext()) {
-                    if (res1.getString(0).equals("positive")) {
-                        countpos = res1.getFloat(1);
-                    } else if (res1.getString(0).equals("negative")) {
-                        countneg = res1.getFloat(1);
-                    } else if (res1.getString(0).equals("neutral")) {
-                        countneu = res1.getFloat(1);
-                    }
+                    countvneg = res1.getFloat(0);
+                    countneg = res1.getFloat(1);
+                    countneu = res1.getFloat(2);
+                    countpos = res1.getFloat(3);
+                    countvpos = res1.getFloat(4);
                 }
 
-
-                xData = new String[]{"Positive", "Neutral", "Negative"};
-                yData = new Float[]{countpos, countneu, countneg};
+                xData = new String[]{"Very Positive", "Positive", "Neutral", "Negative", "Very Negative"};
+                yData = new Float[]{countvpos, countpos, countneu, countneg, countvneg};
                 mChart.setDrawHoleEnabled(true);
                 mChart.setHoleRadius(50);
                 mChart.setHoleColorTransparent(true);
@@ -461,149 +439,149 @@ public class OverviewSentiment extends ActionBarActivity {
             }
         }
 
-        public void GraphBoth() {
-            mBarChart = new BarChart(getActivity());
-            graphpage.addView(mBarChart);
-            mBarChart.setBackgroundColor(Color.WHITE);
-            mBarChart.setGridBackgroundColor(Color.WHITE);
-            mBarChart.setDrawGridBackground(false);
-            mBarChart.setDrawBarShadow(false);
-            mBarChart.setDescription("");
-
-
-            Float counthappy = 0f;
-            Float countsad = 0f;
-            Float countanger = 0f;
-            Float countfear = 0f;
-            Float countdisgust = 0f;
-            Float countsurprise = 0f;
-
-            Cursor res1 = mydb.countPosSentEmot();
-            while (res1.moveToNext()) {
-                if (res1.getString(0).equals("happy")) {
-                    counthappy = Float.parseFloat(res1.getString(1));
-                } else if (res1.getString(0).equals("sad")) {
-                    countsad = Float.parseFloat(res1.getString(1));
-                } else if (res1.getString(0).equals("anger")) {
-                    countanger = Float.parseFloat(res1.getString(1));
-                } else if (res1.getString(0).equals("fear")) {
-                    countfear = Float.parseFloat(res1.getString(1));
-                } else if (res1.getString(0).equals("disgust")) {
-                    countdisgust = Float.parseFloat(res1.getString(1));
-                } else if (res1.getString(0).equals("surprise")) {
-                    countsurprise = Float.parseFloat(res1.getString(1));
-                }
-            }
-
-            float forPercentage1 = counthappy + countsad + countanger + countfear + countdisgust + countsurprise;
-
-            ArrayList<String> xVals = new ArrayList<String>();
-            final String[] xData = {"Happy", "Sad", "Anger", "Fear", "Disg", "Surp"};
-            for (int i = 0; i < xData.length; i++)
-                xVals.add(xData[i]);
-            float[] yData = {counthappy / forPercentage1 * 100, countsad / forPercentage1 * 100, countanger / forPercentage1 * 100,
-                    countfear / forPercentage1 * 100, countdisgust / forPercentage1 * 100, countsurprise / forPercentage1 * 100};
-            List<BarEntry> yVals1 = new ArrayList<>();
-            for (int i = 0; i < yData.length; i++)
-                yVals1.add(new BarEntry(yData[i], i));
-            BarDataSet dataSet1 = new BarDataSet(yVals1, "Positive");
-            dataSet1.setColor(ColorTemplate.getHoloBlue());
-
-            Float pcounthappy = 0f;
-            Float pcountsad = 0f;
-            Float pcountanger = 0f;
-            Float pcountfear = 0f;
-            Float pcountdisgust = 0f;
-            Float pcountsurprise = 0f;
-
-            Cursor res2 = mydb.countNegSentEmot();
-            while (res2.moveToNext()) {
-                if (res2.getString(0).equals("happy")) {
-                    pcounthappy = Float.parseFloat(res2.getString(1));
-                } else if (res2.getString(0).equals("sad")) {
-                    pcountsad = Float.parseFloat(res2.getString(1));
-                } else if (res2.getString(0).equals("anger")) {
-                    pcountanger = Float.parseFloat(res2.getString(1));
-                } else if (res2.getString(0).equals("fear")) {
-                    pcountfear = Float.parseFloat(res2.getString(1));
-                } else if (res2.getString(0).equals("disgust")) {
-                    pcountdisgust = Float.parseFloat(res2.getString(1));
-                } else if (res2.getString(0).equals("surprise")) {
-                    pcountsurprise = Float.parseFloat(res2.getString(1));
-                } else if (res2.getString(0).equals("noemo")) {
-                }
-            }
-            float forPercentage = counthappy + countsad + countanger + countfear + countdisgust + countsurprise;
-
-
-            float[] yData1 = {pcounthappy / forPercentage * 100, pcountsad / forPercentage * 100, pcountanger / forPercentage * 100, pcountfear / forPercentage * 100,
-                    pcountdisgust / forPercentage * 100, pcountsurprise / forPercentage * 100};
-            List<BarEntry> yVals2 = new ArrayList<>();
-            for (int i = 0; i < yData1.length; i++)
-                yVals2.add(new BarEntry(yData1[i], i));
-            BarDataSet dataSet2 = new BarDataSet(yVals2, "Negative");
-            dataSet2.setColor(Color.RED);
-
-
-            List<BarDataSet> list = new ArrayList<>();
-            list.add(dataSet1);
-            list.add(dataSet2);
-
-
-            //
-
-            //
-
-
-
-            List wh = new ArrayList();
-            wh.add(pcounthappy / forPercentage * 100);
-            wh.add(pcountsad / forPercentage * 100);
-            wh.add(pcountanger / forPercentage * 100);
-            wh.add(pcountfear / forPercentage * 100);
-            wh.add(pcountdisgust / forPercentage * 100);
-            wh.add( pcountsurprise / forPercentage * 100);
-            wh.add(counthappy / forPercentage1 * 100);
-            wh.add(countsad / forPercentage1 * 100);
-            wh.add( countanger / forPercentage1 * 100);
-            wh.add( countfear / forPercentage1 * 100);
-            wh.add(countdisgust / forPercentage1 * 100);
-            wh.add(countsurprise / forPercentage1 * 100);
-
-            float w = (float) Collections.max(wh);
-
-
-            YAxis y1 = mBarChart.getAxisLeft();
-            y1.setTextColor(Color.BLACK);
-
-            //Y AXIS VALUE
-            y1.setAxisMaxValue(w+10f);
-            //
-            y1.setDrawGridLines(false);
-            y1.setTextSize(10);
-            y1.setValueFormatter(new ValueFormatter() {
-                @Override
-                public String getFormattedValue(float v) {
-                    String newResult = new Integer((int) v)+"%";
-                    return newResult;
-                }
-
-            });
-
-
-            YAxis y12 = mBarChart.getAxisRight();
-            y12.setEnabled(false);
-            XAxis x1 = mBarChart.getXAxis();
-            x1.setDrawGridLines(false);
-            x1.setPosition(XAxis.XAxisPosition.BOTTOM);
-            BarData data1 = new BarData(xVals, list);
-            mBarChart.setData(data1);
-            mBarChart.setDrawValueAboveBar(true);
-            Legend legit = mBarChart.getLegend();
-            legit.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-            legit.setXEntrySpace(7);
-            legit.setYEntrySpace(5);
-        }
+//        public void GraphBoth() {
+//            mBarChart = new BarChart(getActivity());
+//            graphpage.addView(mBarChart);
+//            mBarChart.setBackgroundColor(Color.WHITE);
+//            mBarChart.setGridBackgroundColor(Color.WHITE);
+//            mBarChart.setDrawGridBackground(false);
+//            mBarChart.setDrawBarShadow(false);
+//            mBarChart.setDescription("");
+//
+//
+//            Float counthappy = 0f;
+//            Float countsad = 0f;
+//            Float countanger = 0f;
+//            Float countfear = 0f;
+//            Float countdisgust = 0f;
+//            Float countsurprise = 0f;
+//
+//            Cursor res1 = mydb.countPosSentEmot();
+//            while (res1.moveToNext()) {
+//                if (res1.getString(0).equals("happy")) {
+//                    counthappy = Float.parseFloat(res1.getString(1));
+//                } else if (res1.getString(0).equals("sad")) {
+//                    countsad = Float.parseFloat(res1.getString(1));
+//                } else if (res1.getString(0).equals("anger")) {
+//                    countanger = Float.parseFloat(res1.getString(1));
+//                } else if (res1.getString(0).equals("fear")) {
+//                    countfear = Float.parseFloat(res1.getString(1));
+//                } else if (res1.getString(0).equals("disgust")) {
+//                    countdisgust = Float.parseFloat(res1.getString(1));
+//                } else if (res1.getString(0).equals("surprise")) {
+//                    countsurprise = Float.parseFloat(res1.getString(1));
+//                }
+//            }
+//
+//            float forPercentage1 = counthappy + countsad + countanger + countfear + countdisgust + countsurprise;
+//
+//            ArrayList<String> xVals = new ArrayList<String>();
+//            final String[] xData = {"Happy", "Sad", "Anger", "Fear", "Disg", "Surp"};
+//            for (int i = 0; i < xData.length; i++)
+//                xVals.add(xData[i]);
+//            float[] yData = {counthappy / forPercentage1 * 100, countsad / forPercentage1 * 100, countanger / forPercentage1 * 100,
+//                    countfear / forPercentage1 * 100, countdisgust / forPercentage1 * 100, countsurprise / forPercentage1 * 100};
+//            List<BarEntry> yVals1 = new ArrayList<>();
+//            for (int i = 0; i < yData.length; i++)
+//                yVals1.add(new BarEntry(yData[i], i));
+//            BarDataSet dataSet1 = new BarDataSet(yVals1, "Positive");
+//            dataSet1.setColor(ColorTemplate.getHoloBlue());
+//
+//            Float pcounthappy = 0f;
+//            Float pcountsad = 0f;
+//            Float pcountanger = 0f;
+//            Float pcountfear = 0f;
+//            Float pcountdisgust = 0f;
+//            Float pcountsurprise = 0f;
+//
+//            Cursor res2 = mydb.countNegSentEmot();
+//            while (res2.moveToNext()) {
+//                if (res2.getString(0).equals("happy")) {
+//                    pcounthappy = Float.parseFloat(res2.getString(1));
+//                } else if (res2.getString(0).equals("sad")) {
+//                    pcountsad = Float.parseFloat(res2.getString(1));
+//                } else if (res2.getString(0).equals("anger")) {
+//                    pcountanger = Float.parseFloat(res2.getString(1));
+//                } else if (res2.getString(0).equals("fear")) {
+//                    pcountfear = Float.parseFloat(res2.getString(1));
+//                } else if (res2.getString(0).equals("disgust")) {
+//                    pcountdisgust = Float.parseFloat(res2.getString(1));
+//                } else if (res2.getString(0).equals("surprise")) {
+//                    pcountsurprise = Float.parseFloat(res2.getString(1));
+//                } else if (res2.getString(0).equals("noemo")) {
+//                }
+//            }
+//            float forPercentage = counthappy + countsad + countanger + countfear + countdisgust + countsurprise;
+//
+//
+//            float[] yData1 = {pcounthappy / forPercentage * 100, pcountsad / forPercentage * 100, pcountanger / forPercentage * 100, pcountfear / forPercentage * 100,
+//                    pcountdisgust / forPercentage * 100, pcountsurprise / forPercentage * 100};
+//            List<BarEntry> yVals2 = new ArrayList<>();
+//            for (int i = 0; i < yData1.length; i++)
+//                yVals2.add(new BarEntry(yData1[i], i));
+//            BarDataSet dataSet2 = new BarDataSet(yVals2, "Negative");
+//            dataSet2.setColor(Color.RED);
+//
+//
+//            List<BarDataSet> list = new ArrayList<>();
+//            list.add(dataSet1);
+//            list.add(dataSet2);
+//
+//
+//            //
+//
+//            //
+//
+//
+//
+//            List wh = new ArrayList();
+//            wh.add(pcounthappy / forPercentage * 100);
+//            wh.add(pcountsad / forPercentage * 100);
+//            wh.add(pcountanger / forPercentage * 100);
+//            wh.add(pcountfear / forPercentage * 100);
+//            wh.add(pcountdisgust / forPercentage * 100);
+//            wh.add( pcountsurprise / forPercentage * 100);
+//            wh.add(counthappy / forPercentage1 * 100);
+//            wh.add(countsad / forPercentage1 * 100);
+//            wh.add( countanger / forPercentage1 * 100);
+//            wh.add( countfear / forPercentage1 * 100);
+//            wh.add(countdisgust / forPercentage1 * 100);
+//            wh.add(countsurprise / forPercentage1 * 100);
+//
+//            float w = (float) Collections.max(wh);
+//
+//
+//            YAxis y1 = mBarChart.getAxisLeft();
+//            y1.setTextColor(Color.BLACK);
+//
+//            //Y AXIS VALUE
+//            y1.setAxisMaxValue(w+10f);
+//            //
+//            y1.setDrawGridLines(false);
+//            y1.setTextSize(10);
+//            y1.setValueFormatter(new ValueFormatter() {
+//                @Override
+//                public String getFormattedValue(float v) {
+//                    String newResult = new Integer((int) v)+"%";
+//                    return newResult;
+//                }
+//
+//            });
+//
+//
+//            YAxis y12 = mBarChart.getAxisRight();
+//            y12.setEnabled(false);
+//            XAxis x1 = mBarChart.getXAxis();
+//            x1.setDrawGridLines(false);
+//            x1.setPosition(XAxis.XAxisPosition.BOTTOM);
+//            BarData data1 = new BarData(xVals, list);
+//            mBarChart.setData(data1);
+//            mBarChart.setDrawValueAboveBar(true);
+//            Legend legit = mBarChart.getLegend();
+//            legit.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+//            legit.setXEntrySpace(7);
+//            legit.setYEntrySpace(5);
+//        }
     }
 
 }
