@@ -230,8 +230,9 @@ public class OverviewSentiment extends ActionBarActivity {
                 mChart.setTransparentCircleRadius(60);
                 mChart.setTransparentCircleColor(Color.WHITE);
                 //enable rotation of the chart by touch
+                mChart.setTouchEnabled(false);
                 mChart.setRotationAngle(0);
-                mChart.setRotationEnabled(false);
+                mChart.setRotationEnabled(true);
                 //set a chart value selected listnerer
                 mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                     @Override
@@ -274,7 +275,7 @@ public class OverviewSentiment extends ActionBarActivity {
 
                 xData = new String[]{"Happy", "Sad", "Anger", "Fear", "Disgust", "Surprise"};
                 yData = new Float[]{counthappy, countsad, countanger, countfear, countdisgust, countsurprise};
-                mChart.setCenterText(new Integer((int) (counthappy + countsad + countanger + countfear + countdisgust)) + "\nReviews");
+                mChart.setCenterText("Reviews");
                 mChart.setCenterTextColor(ColorTemplate.getHoloBlue());
                 mChart.setCenterTextSize(23);
                 mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
@@ -361,7 +362,12 @@ public class OverviewSentiment extends ActionBarActivity {
                 Float countpos = 0f;
                 Float countneu = 0f;
                 Float countneg = 0f;
+                Integer allsentences = 0;
                 Cursor res1 = mydb.countSentiment();
+                Cursor res2 = mydb.countAllSentences();
+                while (res2.moveToNext()){
+                    allsentences = res2.getInt(0);
+                }
                 while (res1.moveToNext()) {
                     countvneg = res1.getFloat(0);
                     countneg = res1.getFloat(1);
@@ -377,12 +383,12 @@ public class OverviewSentiment extends ActionBarActivity {
                 mChart.setHoleColorTransparent(true);
                 mChart.setTransparentCircleRadius(60);
                 mChart.setTransparentCircleColor(Color.WHITE);
-                mChart.setCenterText(new Integer((int) (countpos + countneu + countneg)) + "\nReviews");
+                mChart.setCenterText(allsentences + "\nReviews");
                 mChart.setCenterTextColor(ColorTemplate.getHoloBlue());
                 mChart.setCenterTextSize(23);
                 mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
                 mChart.setDescription("");
-
+                mChart.setTouchEnabled(false);
 
                 ArrayList<Entry> yVals1 = new ArrayList<Entry>();
                 for (int i = 0; i < yData.length; i++)

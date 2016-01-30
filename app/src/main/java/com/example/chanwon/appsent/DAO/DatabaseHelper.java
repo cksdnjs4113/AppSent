@@ -29,9 +29,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("CREATE TABLE " + TB_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, REVIEWID INTEGER, SENTENCE TEXT, SDATE DATE)");
-        db.execSQL("CREATE TABLE " + TB_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, SENTENCEID INTEGER, HAPPY TEXT, SAD TEXT, ANGER TEXT, FEAR TEXT, DISGUST TEXT, SURPRISE TEXT)");
-        db.execSQL("CREATE TABLE " + TB_NAME2 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, SENTENCEID INTEGER, VPOSITIVE TEXT, POSITIVE TEXT, NEUTRAL TEXT, NEGATIVE TEXT, VNEGATIVE TEXT)");
+//        db.execSQL("CREATE TABLE " + TB_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, REVIEWID INTEGER, SENTENCE TEXT, SDATE DATE)");
+//        db.execSQL("CREATE TABLE " + TB_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, SENTENCEID INTEGER, HAPPY TEXT, SAD TEXT, ANGER TEXT, FEAR TEXT, DISGUST TEXT, SURPRISE TEXT)");
+//        db.execSQL("CREATE TABLE " + TB_NAME2 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, SENTENCEID INTEGER, VPOSITIVE TEXT, POSITIVE TEXT, NEUTRAL TEXT, NEGATIVE TEXT, VNEGATIVE TEXT)");
     }
 
     @Override
@@ -122,7 +122,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor countAllSentences() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("count(*) from " + TB_NAME, null);
+        Cursor res = db.rawQuery("select distinct count(reviewid) from sentence_table", null);
         return res;
     }
 

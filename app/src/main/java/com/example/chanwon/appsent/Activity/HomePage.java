@@ -65,10 +65,6 @@ public class HomePage extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
 
-                        mydb.insertData("100", "5	Emerges as something rare , an issue movie that 's so honest and keenly observed that it does n't feel like one .","2015-05-01");
-                        mydb.insertData1("1", "0.5", "0.5", "0.5", "0.5", "0.5", "0.5");
-                        mydb.insertData2("1", "0.5", "0.5", "0", "0", "0");
-
 
                         Toast.makeText(HomePage.this, "Data Inserted", Toast.LENGTH_LONG).show();
                     }
