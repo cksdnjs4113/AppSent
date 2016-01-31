@@ -261,8 +261,12 @@ public class OverviewSentiment extends ActionBarActivity {
                 Float countdisgust = 0f;
                 Float countsurprise = 0f;
 
-
+                int allsentences= 0;
                 Cursor res1 = mydb.countEmotion();
+                Cursor res2 = mydb.countAllSentences();
+                while (res2.moveToNext()){
+                    allsentences = res2.getInt(0);
+                }
                 while (res1.moveToNext()) {
                     counthappy = res1.getFloat(0);
                     countsad = res1.getFloat(1);
@@ -275,8 +279,8 @@ public class OverviewSentiment extends ActionBarActivity {
 
                 xData = new String[]{"Happy", "Sad", "Anger", "Fear", "Disgust", "Surprise"};
                 yData = new Float[]{counthappy, countsad, countanger, countfear, countdisgust, countsurprise};
-                mChart.setCenterText("Reviews");
-                mChart.setCenterTextColor(ColorTemplate.getHoloBlue());
+                mChart.setCenterText(allsentences + "\nReviews");
+                mChart.setCenterTextColor(Color.BLACK);
                 mChart.setCenterTextSize(23);
                 mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
                 mChart.setDescription("");
@@ -374,17 +378,20 @@ public class OverviewSentiment extends ActionBarActivity {
                     countneu = res1.getFloat(2);
                     countpos = res1.getFloat(3);
                     countvpos = res1.getFloat(4);
+
+                    countpos = countpos+countvpos;
+                    countneg = countneg+countvneg;
                 }
 
-                xData = new String[]{"Very Positive", "Positive", "Neutral", "Negative", "Very Negative"};
-                yData = new Float[]{countvpos, countpos, countneu, countneg, countvneg};
+                xData = new String[]{"Positive", "Neutral", "Negative"};
+                yData = new Float[]{countpos, countneu, countneg};
                 mChart.setDrawHoleEnabled(true);
                 mChart.setHoleRadius(50);
                 mChart.setHoleColorTransparent(true);
                 mChart.setTransparentCircleRadius(60);
                 mChart.setTransparentCircleColor(Color.WHITE);
                 mChart.setCenterText(allsentences + "\nReviews");
-                mChart.setCenterTextColor(ColorTemplate.getHoloBlue());
+                mChart.setCenterTextColor(Color.BLACK);
                 mChart.setCenterTextSize(23);
                 mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
                 mChart.setDescription("");
@@ -406,17 +413,21 @@ public class OverviewSentiment extends ActionBarActivity {
 
                 //add many colors
                 ArrayList<Integer> colors = new ArrayList<Integer>();
-                for (int c : ColorTemplate.VORDIPLOM_COLORS)
-                    colors.add(c);
-
-                for (int c : ColorTemplate.JOYFUL_COLORS)
-                    colors.add(c);
-
-                for (int c : ColorTemplate.COLORFUL_COLORS)
-                    colors.add(c);
-
-                for (int c : ColorTemplate.PASTEL_COLORS)
-                    colors.add(c);
+                colors.add(Color.rgb(0,191,255));
+                colors.add(Color.rgb(255,247,140));
+                colors.add(Color.rgb(255,69,0));
+//                colors.add(Color.RED);
+//                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+//                    colors.add(c);
+//
+//                for (int c : ColorTemplate.JOYFUL_COLORS)
+//                    colors.add(c);
+//
+//                for (int c : ColorTemplate.COLORFUL_COLORS)
+//                    colors.add(c);
+//
+//                for (int c : ColorTemplate.PASTEL_COLORS)
+//                    colors.add(c);
 
                 colors.add(ColorTemplate.getHoloBlue());
                 dataSet.setColors(colors);

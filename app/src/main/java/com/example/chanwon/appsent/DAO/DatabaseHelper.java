@@ -126,21 +126,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+
     public Cursor countEmotion() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select sum(happy), sum(sad), sum(anger), sum(fear), sum(disgust), sum(surprise) from emotion_table", null);
         return res;
     }
 
-    public Cursor countPosSentEmot() {
+    public Cursor countTimeSentiment() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select emotion, count(emotion) from " + TB_NAME + " where sentiment = 'positive' group by emotion", null);
+        Cursor res = db.rawQuery("select month, sum(vpositive), sum(positive), sum(neutral), sum(negative), sum(vnegative) from sentiment_table group by month", null);
         return res;
     }
 
-    public Cursor countNegSentEmot() {
+    public Cursor countTimeEmotion() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select emotion, count(emotion) from " + TB_NAME + " where sentiment = 'negative' group by emotion", null);
+        Cursor res = db.rawQuery("select month, sum(happy), sum(sad), sum(anger), sum(fear), sum(disgust), sum(surprise) from emotion_table group by month", null);
         return res;
     }
 }

@@ -61,7 +61,7 @@ public class TimeLinePopup extends Activity {
         mLineChart.setNoDataTextDescription("No data for the moment");
 
         //enable value highlighting
-        mLineChart.setHighlightEnabled(true);
+        mLineChart.setHighlightEnabled(false);
 
         //enable touch gesture
         mLineChart.setTouchEnabled(true);
@@ -70,7 +70,7 @@ public class TimeLinePopup extends Activity {
         mLineChart.setScaleEnabled(true);
         mLineChart.setDrawGridBackground(false);
 
-        //enable pich zoom to avoid scaling x and y axis seprately
+    //    enable pich zoom to avoid scaling x and y axis seprately
 
         mLineChart.setPinchZoom(true);
 
@@ -92,20 +92,24 @@ public class TimeLinePopup extends Activity {
         //customize legend
         u.setForm(Legend.LegendForm.LINE);
         u.setTextColor(Color.BLACK);
-
+        u.setTextSize(10);
         XAxis x1 = mLineChart.getXAxis();
         x1.setTextColor(Color.BLACK);
         x1.setDrawGridLines(true);
         x1.setAvoidFirstLastClipping(true);
 
 
+
+
         YAxis y1 = mLineChart.getAxisLeft();
         y1.setTextColor(Color.BLACK);
 
         //Y AXIS VALUE
-        y1.setAxisMaxValue(100f);
+//        y1.setAxisMaxValue(100f);
         //
+
         y1.setDrawGridLines(true);
+
 
         YAxis y12 = mLineChart.getAxisRight();
         y12.setEnabled(false);
@@ -115,80 +119,63 @@ public class TimeLinePopup extends Activity {
     }
 
     private void AddEntry() {
+        Cursor res4 = mydb.countTimeSentiment();
+        ArrayList<String> xVariables = new ArrayList<>();
+        ArrayList<Entry> vpostiveVar = new ArrayList<>();
+        ArrayList<Entry> positiveVar = new ArrayList<>();
+        ArrayList<Entry> neutralVar = new ArrayList<>();
+        ArrayList<Entry> negativeVar = new ArrayList<>();
+        ArrayList<Entry> vnegativeVar = new ArrayList<>();
+        Float vpos = 0f;
+        Float pos = 0f;
+        Float neu = 0f;
+        Float neg = 0f;
+        Float vneg = 0f;
+        Float sumofsent = 0f;
+        int indexEntry = 0;
 
-        ArrayList<String> xVals = new ArrayList<String>();
-        String[] xData = {"Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"};
-        for (int i = 0; i < xData.length; i++)
-            xVals.add(xData[i]);
+        while (res4.moveToNext()){
+            xVariables.add(res4.getString(0));
+            vpos = Float.parseFloat(res4.getString(1));
+            pos = Float.parseFloat(res4.getString(2));
+            neu = Float.parseFloat(res4.getString(3));
+            neg = Float.parseFloat(res4.getString(4));
+            vneg = Float.parseFloat(res4.getString(5));
+            sumofsent = vpos+pos+neu+neg+vneg;
+            vpos = vpos / (float) sumofsent;
+            pos = pos / (float) sumofsent;
+            neu = neu / (float) sumofsent;
+            neg = neg / (float) sumofsent;
+            vneg = vneg / (float) sumofsent;
 
-        Float countpos = 0f;
-        Float countneg = 0f;
-        Float countneu = 0f;
+            pos = vpos+pos;
+            neg = vneg + neg;
 
-        Cursor res1 = mydb.getTimeSentiment("positive");
-        Cursor res2 = mydb.getTimeSentiment("negative");
-        Cursor res3 = mydb.getTimeSentiment("neutral");
 
-        while (res1.moveToNext()) {
-            countpos = Float.parseFloat(res1.getString(1));
+            positiveVar.add(new Entry(pos * 100f, indexEntry));
+            neutralVar.add(new Entry(neu * 100f, indexEntry));
+            negativeVar.add(new Entry(neg * 100f, indexEntry));
+
+
+
+            indexEntry++;
         }
-        while (res2.moveToNext()) {
-            countneg = Float.parseFloat(res2.getString(1));
-        }
-        while (res3.moveToNext()) {
-            countneu = Float.parseFloat(res3.getString(1));
-        }
 
-        float overallCount = countneg + countneu + countpos;
-        double overallCount1 = (double) overallCount;
-        double countpos1 = (double) countpos;
-        double countpos2 = (countpos1/overallCount1)*100d;
-        double countneg1 = (double) countneg;
-        double countneg2 = (countneg1/overallCount1)*100d;
-        double countneu1 = (double) countneu;
-        double countneu2 = (countneu1/overallCount1)*100d;
-
-        float[] yData = new float[]{(float) countpos2, 50f, 50f, 20f, 40f, 70f, 20f};
-        float[] yData1 = new float[]{(float) countneg2, 40f, 30f, 70f, 55f, 25f, 60f};
-        float[] yData2 = new float[]{(float) countneu2, 10f, 20f, 10f, 5f, 5f, 20f };
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-        ArrayList<Entry> yVals2 = new ArrayList<Entry>();
-        ArrayList<Entry> yVals3 = new ArrayList<Entry>();
-        for (int i = 0; i < yData.length; i++)
-            yVals1.add(new Entry(yData[i], i));
-        for (int i = 0; i < yData1.length; i++)
-            yVals2.add(new Entry(yData1[i], i));
-        for (int i = 0; i < yData2.length; i++)
-            yVals3.add(new Entry(yData2[i], i));
-        LineDataSet dataset = new LineDataSet(yVals1, "Positive");
-        dataset.setDrawCubic(true);
-        dataset.setCubicIntensity(0.2f);
-        dataset.setAxisDependency(YAxis.AxisDependency.LEFT);
-        dataset.setColor(ColorTemplate.getHoloBlue());
-        dataset.setCircleColor(ColorTemplate.getHoloBlue());
-        dataset.setLineWidth(2f);
-        dataset.setCircleSize(4f);
-        dataset.setFillAlpha(65);
-        dataset.setFillColor(ColorTemplate.getHoloBlue());
-        dataset.setHighLightColor(Color.rgb(244, 177, 177));
-        dataset.setValueTextColor(Color.WHITE);
-        dataset.setValueTextSize(10f);
-
-        LineDataSet dataset1 = new LineDataSet(yVals2, "Negative");
+        LineDataSet dataset1 = new LineDataSet(positiveVar, "Positive");
         dataset1.setDrawCubic(true);
         dataset1.setCubicIntensity(0.2f);
         dataset1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        dataset1.setColor(Color.RED);
-        dataset1.setCircleColor(Color.RED);
+        dataset1.setColor(ColorTemplate.getHoloBlue());
+        dataset1.setCircleColor(ColorTemplate.getHoloBlue());
         dataset1.setLineWidth(2f);
         dataset1.setCircleSize(4f);
         dataset1.setFillAlpha(65);
         dataset1.setFillColor(ColorTemplate.getHoloBlue());
-        dataset1.setHighLightColor(Color.rgb(244, 177, 177));
+        dataset1.setHighLightColor(Color.rgb(0, 191, 255));
         dataset1.setValueTextColor(Color.WHITE);
         dataset1.setValueTextSize(10f);
 
-        LineDataSet dataset2 = new LineDataSet(yVals3, "Neutral");
+        LineDataSet dataset2 = new LineDataSet(neutralVar, "Neutral");
         dataset2.setDrawCubic(true);
         dataset2.setCubicIntensity(0.2f);
         dataset2.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -198,16 +185,33 @@ public class TimeLinePopup extends Activity {
         dataset2.setCircleSize(4f);
         dataset2.setFillAlpha(65);
         dataset2.setFillColor(ColorTemplate.getHoloBlue());
-        dataset2.setHighLightColor(Color.rgb(244, 177, 177));
+        dataset2.setHighLightColor(Color.rgb(255, 247, 140));
         dataset2.setValueTextColor(Color.WHITE);
         dataset2.setValueTextSize(10f);
 
+        LineDataSet dataset3 = new LineDataSet(negativeVar, "Negative");
+        dataset3.setDrawCubic(true);
+        dataset3.setCubicIntensity(0.2f);
+        dataset3.setAxisDependency(YAxis.AxisDependency.LEFT);
+        dataset3.setColor(Color.RED);
+        dataset3.setCircleColor(Color.RED);
+        dataset3.setLineWidth(2f);
+        dataset3.setCircleSize(4f);
+        dataset3.setFillAlpha(65);
+        dataset3.setFillColor(ColorTemplate.getHoloBlue());
+        dataset3.setHighLightColor(Color.rgb(255, 69, 0));
+        dataset3.setValueTextColor(Color.WHITE);
+        dataset3.setValueTextSize(10f);
+
+
         List<LineDataSet> list = new ArrayList<>();
-        list.add(dataset);
+
         list.add(dataset1);
         list.add(dataset2);
+        list.add(dataset3);
 
-        LineData data3 = new LineData(xVals, list);
+
+        LineData data3 = new LineData(xVariables, list);
 
         mLineChart.setData(data3);
 
