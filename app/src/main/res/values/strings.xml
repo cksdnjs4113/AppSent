@@ -21,6 +21,7 @@
 
     <string name="action_example">Example action</string>
     <string name="title_activity_overview_sentiment">OVERVIEW</string>
+    <string name="title_activity_feature_ranking">FEATURE RANKING</string>
     <string-array name="tabs">
         <item>SENTIMENT</item>
         <item>EMOTION</item>

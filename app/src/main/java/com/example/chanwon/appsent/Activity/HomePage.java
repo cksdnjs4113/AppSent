@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.chanwon.appsent.DAO.DatabaseHelper;
 import com.example.chanwon.appsent.NavigationDrawer;
@@ -65,8 +64,7 @@ public class HomePage extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
 
-
-                        Toast.makeText(HomePage.this, "Data Inserted", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(HomePage.this, RankingFeatures.class));
                     }
                 }
         );

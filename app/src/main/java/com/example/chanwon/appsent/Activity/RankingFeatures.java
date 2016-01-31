@@ -45,7 +45,7 @@ import java.util.ArrayList;
 //import com.example.chanwon.appsent.Analytics.SentimentTool;
 
 
-public class OverviewSentiment extends ActionBarActivity {
+public class RankingFeatures extends ActionBarActivity {
     DatabaseHelper mydb;
     private Toolbar toolbar;
     private ViewPager mPager;
@@ -175,19 +175,15 @@ public class OverviewSentiment extends ActionBarActivity {
             Bundle bundle = getArguments();
             if (bundle != null) {
                 if (bundle.getInt("position") == 0) {
-                    textView.setText("SENTIMENT");
-                    graphMethod();
-                    timeline();
+                    textView.setText("");
+                    //graphMethod();
+                   // timeline();
 
                 }
                 if (bundle.getInt("position") == 1) {
-                    try {
-                        textView.setText("EMOTION");
-                        graphMethodForEmotion();
-                        timeline();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    textView.setText("");
+                    //graphMethodForEmotion();
+                    //timeline();
                 }
                 if (bundle.getInt("position") == 2) {
                     textView.setText("Will be updated with new feature..");
