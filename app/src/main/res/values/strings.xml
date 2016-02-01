@@ -18,13 +18,21 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="select_month">Select Month</string>
 
     <string name="action_example">Example action</string>
     <string name="title_activity_overview_sentiment">OVERVIEW</string>
-    <string name="title_activity_feature_ranking">FEATURE RANKING</string>
+    <string name="title_activity_feature_ranking">SENTIMENT RANKING</string>
     <string-array name="tabs">
+        <item>STARS</item>
         <item>SENTIMENT</item>
         <item>EMOTION</item>
     </string-array>
+    <string-array name="tabs1">
+        <item>POSITIVE</item>
+        <item>NEUTRAL</item>
+        <item>NEGATIVE</item>
+    </string-array>
     <string name="title_activity_timeline_popup_emo">TimelinePopupEmo</string>
+    <string name="title_activity_timeline_popup_star">TimelinePopupStar</string>
 </resources>

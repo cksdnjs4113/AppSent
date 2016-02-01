@@ -41,6 +41,10 @@
         <activity
             android:name=".Activity.TimelinePopupEmo"
             android:label="@string/title_activity_timeline_popup_emo"
+            android:theme="@style/AppTheme.CustomTheme" />
+        <activity
+            android:name=".Activity.TimelinePopupStar"
+            android:label="@string/title_activity_timeline_popup_star"
             android:theme="@style/AppTheme.CustomTheme"></activity>
     </application>
 

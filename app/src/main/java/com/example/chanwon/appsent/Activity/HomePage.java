@@ -16,7 +16,7 @@ import com.example.chanwon.appsent.R;
 
 
 public class HomePage extends ActionBarActivity {
-    Button btnAnal, btnInsert;
+    Button btnAnal, btnInsert, btnEmotionRanking;
 
     //DATABASE
     DatabaseHelper mydb;
@@ -37,8 +37,10 @@ public class HomePage extends ActionBarActivity {
 
         btnAnal = (Button) findViewById(R.id.btnAnal);
         btnInsert = (Button) findViewById(R.id.buttonInsert);
+        btnEmotionRanking = (Button) findViewById(R.id.buttonEmoRanking);
         inserting();
         analyzing();
+        emoRanking();
 
 
         NavigationDrawer drawerFragment = (NavigationDrawer)
@@ -59,6 +61,18 @@ public class HomePage extends ActionBarActivity {
 
     public void inserting() {
         btnInsert.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        startActivity(new Intent(HomePage.this, RankingFeatures.class));
+                    }
+                }
+        );
+    }
+    public void emoRanking() {
+        btnEmotionRanking.setOnClickListener(
                 new View.OnClickListener() {
 
                     @Override

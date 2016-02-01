@@ -119,10 +119,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select sum(vnegative), sum(negative), sum(neutral), sum(positive), sum(vpositive) from sentiment_table", null);
         return res;
     }
+    public Cursor countStars() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select sum(stars1), sum(stars2), sum(stars3), sum(stars4), sum(stars4) from stars_table", null);
+        return res;
+    }
 
     public Cursor countAllSentences() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select distinct count(reviewid) from sentence_table", null);
+        return res;
+    }
+    public Cursor countAllSentencesStars() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select count(*) from stars_table", null);
         return res;
     }
 
@@ -142,6 +152,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor countTimeEmotion() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select month, sum(happy), sum(sad), sum(anger), sum(fear), sum(disgust), sum(surprise) from emotion_table group by month", null);
+        return res;
+    }
+    public Cursor countTimeStars() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select month, sum(stars1), sum(stars2), sum(stars3), sum(stars4), sum(stars5) from stars_table group by month", null);
+        return res;
+    }
+    public Cursor rankPositiveFeature() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
+                "FROM nouns_table \n" +
+                "INNER JOIN sentiment_table\n" +
+                "ON nouns_table.sentenceID=sentiment_table.sentenceid\n" +
+                "Where VPOSITIVE+POSITIVE > 0.4\n" +
+                "Group by nouns_table.nouns\n" +
+                "order by count(nouns_table.sentenceid) DESC limit 10", null);
+        return res;
+    }
+    public Cursor rankNegativeFeature() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
+                "FROM nouns_table \n" +
+                "INNER JOIN sentiment_table\n" +
+                "ON nouns_table.sentenceID=sentiment_table.sentenceid\n" +
+                "Where VNEGATIVE+NEGATIVE > 0.4\n" +
+                "Group by nouns_table.nouns\n" +
+                "order by count(nouns_table.sentenceid) DESC limit 10", null);
+        return res;
+    }
+    public Cursor rankNeutralFeature() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
+                "FROM nouns_table \n" +
+                "INNER JOIN sentiment_table\n" +
+                "ON nouns_table.sentenceID=sentiment_table.sentenceid\n" +
+                "Where NEUTRAL > 0.4\n" +
+                "Group by nouns_table.nouns\n" +
+                "order by count(nouns_table.sentenceid) DESC limit 10", null);
         return res;
     }
 }

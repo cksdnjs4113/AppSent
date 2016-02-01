@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,8 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,15 +30,17 @@ import com.example.chanwon.appsent.NavigationDrawer;
 import com.example.chanwon.appsent.R;
 import com.example.chanwon.appsent.Tab.SlidingTabLayout;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Highlight;
-import com.github.mikephil.charting.utils.PercentFormatter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +58,7 @@ public class RankingFeatures extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_overview_sentiment);
+        setContentView(R.layout.activity_ranking_feature);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
@@ -66,7 +69,7 @@ public class RankingFeatures extends ActionBarActivity {
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-        mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        mTabs = (SlidingTabLayout) findViewById(R.id.tabs1);
         mTabs.setDistributeEvenly(true);
 
         mTabs.setViewPager(mPager);
@@ -112,7 +115,8 @@ public class RankingFeatures extends ActionBarActivity {
 
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
-            tabs = getResources().getStringArray(R.array.tabs);
+            tabs = getResources().getStringArray(R.array.tabs1);
+
 
         }
 
@@ -124,7 +128,7 @@ public class RankingFeatures extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -136,15 +140,17 @@ public class RankingFeatures extends ActionBarActivity {
     public static class MyFragment extends Fragment {
 
 
-        private TextView textView;
+        private TextView textView, textView1;
         private FrameLayout graphpage, graphpage1;
-        PieChart mChart;
+        HorizontalBarChart mChart;
         Legend mLegend;
         BarChart mBarChart;
         private Button buttonTimeline;
         private String[] xData = {};
-        private Float[] yData = {};
+        private Integer[] yData = {};
+        private Spinner spinner;
         DatabaseHelper mydb;
+
 
         public static MyFragment getInstance(int position) {
             MyFragment myFragment = new MyFragment();
@@ -164,10 +170,25 @@ public class RankingFeatures extends ActionBarActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View layout = inflater.inflate(R.layout.fragment_overviewsent, container, false);
+            View layout = inflater.inflate(R.layout.fragment_rankings, container, false);
             graphpage = (FrameLayout) layout.findViewById(R.id.graphframe);
             textView = (TextView) layout.findViewById(R.id.graphTitle);
+            textView1 = (TextView) layout.findViewById(R.id.subTitle);
             buttonTimeline = (Button) layout.findViewById(R.id.buttonTimeline);
+            spinner = (Spinner) layout.findViewById(R.id.spinner);
+            spinner.setBackgroundColor(Color.LTGRAY);
+
+            ArrayList<String> monthlist = new ArrayList<>();
+            monthlist.add("Overall");
+            monthlist.add("201401");
+            monthlist.add("201401");
+            monthlist.add("201402");
+            monthlist.add("201403");
+            monthlist.add("201404");
+            monthlist.add("201405");
+
+            ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.values, monthlist);
+            spinner.setAdapter(adapter);
 
 
             mydb = new DatabaseHelper(getActivity());
@@ -175,18 +196,36 @@ public class RankingFeatures extends ActionBarActivity {
             Bundle bundle = getArguments();
             if (bundle != null) {
                 if (bundle.getInt("position") == 0) {
-                    textView.setText("");
-                    //graphMethod();
-                   // timeline();
+                    textView.setText("Flutter");
+                    textView1.setText("Top 10 Repeated Features");
+                    try {
+                        graphForPositive();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    // timeline();
 
                 }
                 if (bundle.getInt("position") == 1) {
-                    textView.setText("");
-                    //graphMethodForEmotion();
+                    textView.setText("Flutter");
+                    textView1.setText("Top 10 Repeated Features");
+
+                    try {
+                        graphForNeutral();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     //timeline();
                 }
                 if (bundle.getInt("position") == 2) {
-                    textView.setText("Will be updated with new feature..");
+                    textView.setText("Flutter");
+                    textView1.setText("Top 10 Repeated Features");
+                    try {
+                        graphForNegative();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     //GraphBoth();
                     //timeline();
                 }
@@ -211,25 +250,36 @@ public class RankingFeatures extends ActionBarActivity {
             );
         }
 
-        public void graphMethodForEmotion() throws IOException {
+        public void graphForNeutral() throws IOException {
             {
                 //textView.setText("This page is " + bundle.getInt("position"));
-                mChart = new PieChart(getActivity());
+                mChart = new HorizontalBarChart(getActivity());
+                mChart.setHighlightEnabled(false);
+                mChart.setDrawGridBackground(false);
                 graphpage.addView(mChart);
                 graphpage.setBackgroundColor(Color.WHITE);
                 //configure pie chart
-                mChart.setUsePercentValues(true);
-                //enable hole and conigure
-                mChart.setDrawHoleEnabled(true);
-                mChart.setHoleRadius(50);
-                mChart.setHoleColorTransparent(true);
-                mChart.setTransparentCircleRadius(60);
-                mChart.setTransparentCircleColor(Color.WHITE);
-                //enable rotation of the chart by touch
-                mChart.setTouchEnabled(false);
-                mChart.setRotationAngle(0);
-                mChart.setRotationEnabled(true);
                 //set a chart value selected listnerer
+                XAxis x1 = mChart.getXAxis();
+                x1.setPosition(XAxis.XAxisPosition.BOTTOM);
+                x1.setTextColor(Color.BLACK);
+                x1.setDrawGridLines(true);
+                x1.setAvoidFirstLastClipping(true);
+                x1.setDrawLabels(true);
+                x1.setDrawGridLines(false);
+                YAxis y1 = mChart.getAxisLeft();
+                y1.setEnabled(true);
+                y1.setDrawLabels(true);
+                y1.setTextSize(10);
+                y1.setDrawGridLines(false);
+                YAxis y2 = mChart.getAxisRight();
+                y2.setEnabled(false);
+                y2.setDrawLabels(false);
+                Legend u = mChart.getLegend();
+                u.setFormSize(0);
+                mChart.setTouchEnabled(false);
+
+
                 mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                     @Override
                     public void onValueSelected(Entry entry, int i, Highlight highlight) {
@@ -248,49 +298,26 @@ public class RankingFeatures extends ActionBarActivity {
 
                 });
                 ///
+                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+                ArrayList<String> xVals1 = new ArrayList<String>();
 
-
-                Float counthappy = 0f;
-                Float countsad = 0f;
-                Float countanger = 0f;
-                Float countfear = 0f;
-                Float countdisgust = 0f;
-                Float countsurprise = 0f;
-
-                int allsentences= 0;
-                Cursor res1 = mydb.countEmotion();
-                Cursor res2 = mydb.countAllSentences();
-                while (res2.moveToNext()){
-                    allsentences = res2.getInt(0);
-                }
+                int allsentences = 0;
+                Cursor res1 = mydb.rankNeutralFeature();
+                int indexnumber = 9;
                 while (res1.moveToNext()) {
-                    counthappy = res1.getFloat(0);
-                    countsad = res1.getFloat(1);
-                    countanger = res1.getFloat(2);
-                    countfear = res1.getFloat(3);
-                    countdisgust = res1.getFloat(4);
-                    countsurprise = res1.getFloat(5);
+                    xVals1.add(res1.getString(0));
+                    yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                    indexnumber--;
+                }
+                ArrayList<String> xVals2 = new ArrayList<String>();
+                for(int j = yVals1.size() - 1; j>=0; j--){
+                    xVals2.add(xVals1.get(j));
                 }
 
 
-                xData = new String[]{"Happy", "Sad", "Anger", "Fear", "Disgust", "Surprise"};
-                yData = new Float[]{counthappy, countsad, countanger, countfear, countdisgust, countsurprise};
-                mChart.setCenterText(allsentences + "\nReviews");
-                mChart.setCenterTextColor(Color.BLACK);
-                mChart.setCenterTextSize(23);
-                mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
-                mChart.setDescription("");
-
-                ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-                for (int i = 0; i < yData.length; i++)
-                    yVals1.add(new Entry(yData[i], i));
-                ArrayList<String> xVals = new ArrayList<String>();
-                for (int i = 0; i < xData.length; i++)
-                    xVals.add(xData[i]);
                 //create pie data set
-                PieDataSet dataSet = new PieDataSet(yVals1, " ");
-                dataSet.setSliceSpace(3);
-                dataSet.setSelectionShift(5);
+                BarDataSet dataSet = new BarDataSet(yVals1, " ");
+
                 //add many colors
                 ArrayList<Integer> colors = new ArrayList<Integer>();
                 for (int c : ColorTemplate.VORDIPLOM_COLORS)
@@ -304,8 +331,7 @@ public class RankingFeatures extends ActionBarActivity {
                 colors.add(ColorTemplate.getHoloBlue());
                 dataSet.setColors(colors);
                 //instantiate pie data object now
-                PieData data = new PieData(xVals, dataSet);
-                data.setValueFormatter(new PercentFormatter());
+                BarData data = new BarData(xVals2, dataSet);
                 data.setValueTextSize(11f);
                 data.setValueTextColor(Color.BLACK);
                 mChart.setData(data);
@@ -313,32 +339,40 @@ public class RankingFeatures extends ActionBarActivity {
                 mChart.highlightValues(null);
                 //update pie chart
                 mChart.invalidate();
-                //customize Legends
-                Legend legit = mChart.getLegend();
-                legit.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-                legit.setXEntrySpace(3);
-                legit.setYEntrySpace(2);
+
+
             }
         }
-
-        public void graphMethod() {
+        public void graphForNegative() throws IOException {
             {
                 //textView.setText("This page is " + bundle.getInt("position"));
-                mChart = new PieChart(getActivity());
+                mChart = new HorizontalBarChart(getActivity());
+                mChart.setHighlightEnabled(false);
+                mChart.setDrawGridBackground(false);
                 graphpage.addView(mChart);
                 graphpage.setBackgroundColor(Color.WHITE);
-
                 //configure pie chart
-                mChart.setUsePercentValues(true);
-
-                //enable hole and conigure
-
-
-                //enable rotation of the chart by touch
-                mChart.setRotationAngle(0);
-                mChart.setRotationEnabled(false);
-
                 //set a chart value selected listnerer
+                XAxis x1 = mChart.getXAxis();
+                x1.setPosition(XAxis.XAxisPosition.BOTTOM);
+                x1.setTextColor(Color.BLACK);
+                x1.setDrawGridLines(true);
+                x1.setAvoidFirstLastClipping(true);
+                x1.setDrawLabels(true);
+                x1.setDrawGridLines(false);
+                YAxis y1 = mChart.getAxisLeft();
+                y1.setEnabled(true);
+                y1.setDrawLabels(true);
+                y1.setTextSize(10);
+                y1.setDrawGridLines(false);
+                YAxis y2 = mChart.getAxisRight();
+                y2.setEnabled(false);
+                y2.setDrawLabels(false);
+                Legend u = mChart.getLegend();
+                u.setFormSize(0);
+                mChart.setTouchEnabled(false);
+
+
                 mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                     @Override
                     public void onValueSelected(Entry entry, int i, Highlight highlight) {
@@ -357,97 +391,140 @@ public class RankingFeatures extends ActionBarActivity {
 
                 });
                 ///
-                Float countvpos = 0f;
-                Float countvneg = 0f;
-                Float countpos = 0f;
-                Float countneu = 0f;
-                Float countneg = 0f;
-                Integer allsentences = 0;
-                Cursor res1 = mydb.countSentiment();
-                Cursor res2 = mydb.countAllSentences();
-                while (res2.moveToNext()){
-                    allsentences = res2.getInt(0);
-                }
+                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+                ArrayList<String> xVals1 = new ArrayList<String>();
+
+                int allsentences = 0;
+                Cursor res1 = mydb.rankNegativeFeature();
+                int indexnumber = 9;
                 while (res1.moveToNext()) {
-                    countvneg = res1.getFloat(0);
-                    countneg = res1.getFloat(1);
-                    countneu = res1.getFloat(2);
-                    countpos = res1.getFloat(3);
-                    countvpos = res1.getFloat(4);
-
-                    countpos = countpos+countvpos;
-                    countneg = countneg+countvneg;
+                    xVals1.add(res1.getString(0));
+                    yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                    indexnumber--;
+                }
+                ArrayList<String> xVals2 = new ArrayList<String>();
+                for(int j = yVals1.size() - 1; j>=0; j--){
+                    xVals2.add(xVals1.get(j));
                 }
 
-                xData = new String[]{"Positive", "Neutral", "Negative"};
-                yData = new Float[]{countpos, countneu, countneg};
-                mChart.setDrawHoleEnabled(true);
-                mChart.setHoleRadius(50);
-                mChart.setHoleColorTransparent(true);
-                mChart.setTransparentCircleRadius(60);
-                mChart.setTransparentCircleColor(Color.WHITE);
-                mChart.setCenterText(allsentences + "\nReviews");
-                mChart.setCenterTextColor(Color.BLACK);
-                mChart.setCenterTextSize(23);
-                mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
-                mChart.setDescription("");
-                mChart.setTouchEnabled(false);
-
-                ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-                for (int i = 0; i < yData.length; i++)
-                    yVals1.add(new Entry(yData[i], i));
-                ArrayList<String> xVals = new ArrayList<String>();
-
-                for (int i = 0; i < xData.length; i++)
-                    xVals.add(xData[i]);
 
                 //create pie data set
-
-                PieDataSet dataSet = new PieDataSet(yVals1, " ");
-                dataSet.setSliceSpace(3);
-                dataSet.setSelectionShift(5);
+                BarDataSet dataSet = new BarDataSet(yVals1, " ");
 
                 //add many colors
                 ArrayList<Integer> colors = new ArrayList<Integer>();
-                colors.add(Color.rgb(0,191,255));
-                colors.add(Color.rgb(255,247,140));
-                colors.add(Color.rgb(255,69,0));
-//                colors.add(Color.RED);
-//                for (int c : ColorTemplate.VORDIPLOM_COLORS)
-//                    colors.add(c);
-//
-//                for (int c : ColorTemplate.JOYFUL_COLORS)
-//                    colors.add(c);
-//
-//                for (int c : ColorTemplate.COLORFUL_COLORS)
-//                    colors.add(c);
-//
-//                for (int c : ColorTemplate.PASTEL_COLORS)
-//                    colors.add(c);
-
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
                 colors.add(ColorTemplate.getHoloBlue());
                 dataSet.setColors(colors);
-
                 //instantiate pie data object now
-
-                PieData data = new PieData(xVals, dataSet);
-                data.setValueFormatter(new PercentFormatter());
+                BarData data = new BarData(xVals2, dataSet);
                 data.setValueTextSize(11f);
                 data.setValueTextColor(Color.BLACK);
-
                 mChart.setData(data);
-                mChart.setDescription("");
-
                 //undo all highlights
                 mChart.highlightValues(null);
-
                 //update pie chart
                 mChart.invalidate();
-                //customize Legends
-                Legend legit = mChart.getLegend();
-                legit.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-                legit.setXEntrySpace(7);
-                legit.setYEntrySpace(5);
+
+
+            }
+        }public void graphForPositive() throws IOException {
+            {
+                //textView.setText("This page is " + bundle.getInt("position"));
+                mChart = new HorizontalBarChart(getActivity());
+                mChart.setHighlightEnabled(false);
+                mChart.setDrawGridBackground(false);
+                graphpage.addView(mChart);
+                graphpage.setBackgroundColor(Color.WHITE);
+                //configure pie chart
+                //set a chart value selected listnerer
+                XAxis x1 = mChart.getXAxis();
+                x1.setPosition(XAxis.XAxisPosition.BOTTOM);
+                x1.setTextColor(Color.BLACK);
+                x1.setDrawGridLines(true);
+                x1.setAvoidFirstLastClipping(true);
+                x1.setDrawLabels(true);
+                x1.setDrawGridLines(false);
+                YAxis y1 = mChart.getAxisLeft();
+                y1.setEnabled(true);
+                y1.setDrawLabels(true);
+                y1.setTextSize(10);
+                y1.setDrawGridLines(false);
+                YAxis y2 = mChart.getAxisRight();
+                y2.setEnabled(false);
+                y2.setDrawLabels(false);
+                Legend u = mChart.getLegend();
+                u.setFormSize(0);
+                mChart.setTouchEnabled(false);
+
+
+                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+                        //display msg when value selected
+                        if (entry == null) {
+                            return;
+
+                        }
+                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" + new Integer((int) entry.getVal()), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNothingSelected() {
+
+                    }
+
+                });
+                ///
+                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+                ArrayList<String> xVals1 = new ArrayList<String>();
+
+                int allsentences = 0;
+                Cursor res1 = mydb.rankPositiveFeature();
+                int indexnumber = 9;
+                while (res1.moveToNext()) {
+                    xVals1.add(res1.getString(0));
+                    yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                    indexnumber--;
+                }
+                ArrayList<String> xVals2 = new ArrayList<String>();
+                for(int j = yVals1.size() - 1; j>=0; j--){
+                    xVals2.add(xVals1.get(j));
+                }
+
+
+                //create pie data set
+                BarDataSet dataSet = new BarDataSet(yVals1, " ");
+
+                //add many colors
+                ArrayList<Integer> colors = new ArrayList<Integer>();
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
+                colors.add(ColorTemplate.getHoloBlue());
+                dataSet.setColors(colors);
+                //instantiate pie data object now
+                BarData data = new BarData(xVals2, dataSet);
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.BLACK);
+                mChart.setData(data);
+                //undo all highlights
+                mChart.highlightValues(null);
+                //update pie chart
+                mChart.invalidate();
+
 
             }
         }

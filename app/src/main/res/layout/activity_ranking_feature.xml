@@ -19,7 +19,7 @@
 
 
         <com.example.chanwon.appsent.Tab.SlidingTabLayout
-            android:id="@+id/tabs"
+            android:id="@+id/tabs1"
             android:background="#F44336"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

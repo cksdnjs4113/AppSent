@@ -124,7 +124,7 @@ public class OverviewSentiment extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -136,7 +136,7 @@ public class OverviewSentiment extends ActionBarActivity {
     public static class MyFragment extends Fragment {
 
 
-        private TextView textView;
+        private TextView textView, textView1;
         private FrameLayout graphpage, graphpage1;
         PieChart mChart;
         Legend mLegend;
@@ -167,6 +167,7 @@ public class OverviewSentiment extends ActionBarActivity {
             View layout = inflater.inflate(R.layout.fragment_overviewsent, container, false);
             graphpage = (FrameLayout) layout.findViewById(R.id.graphframe);
             textView = (TextView) layout.findViewById(R.id.graphTitle);
+            textView1 = (TextView) layout.findViewById(R.id.textView3);
             buttonTimeline = (Button) layout.findViewById(R.id.buttonTimeline);
 
 
@@ -175,22 +176,26 @@ public class OverviewSentiment extends ActionBarActivity {
             Bundle bundle = getArguments();
             if (bundle != null) {
                 if (bundle.getInt("position") == 0) {
-                    textView.setText("SENTIMENT");
-                    graphMethod();
+                    textView.setText("Flutter");
+                    graphMethodStars();
                     timeline();
 
                 }
                 if (bundle.getInt("position") == 1) {
-                    try {
-                        textView.setText("EMOTION");
-                        graphMethodForEmotion();
+
+                        textView.setText("Flutter");
+                    graphMethod();
                         timeline();
+
+                }
+                if (bundle.getInt("position") == 2) {
+                    textView.setText("Flutter");
+                    try {
+                        graphMethodForEmotion();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-                if (bundle.getInt("position") == 2) {
-                    textView.setText("Will be updated with new feature..");
+                    timeline();
                     //GraphBoth();
                     //timeline();
                 }
@@ -206,8 +211,10 @@ public class OverviewSentiment extends ActionBarActivity {
                         public void onClick(View v) {
                             Bundle bundle = getArguments();
                             if (bundle.getInt("position") == 0) {
-                                startActivity(new Intent(getActivity(), TimeLinePopup.class));
+                                startActivity(new Intent(getActivity(), TimelinePopupStar.class));
                             } else if (bundle.getInt("position") == 1) {
+                                startActivity(new Intent(getActivity(), TimeLinePopup.class));
+                            } else if (bundle.getInt("position") == 2) {
                                 startActivity(new Intent(getActivity(), TimelinePopupEmo.class));
                             }
                         }
@@ -263,7 +270,7 @@ public class OverviewSentiment extends ActionBarActivity {
 
                 int allsentences= 0;
                 Cursor res1 = mydb.countEmotion();
-                Cursor res2 = mydb.countAllSentences();
+                Cursor res2 = mydb.countAllSentencesStars();
                 while (res2.moveToNext()){
                     allsentences = res2.getInt(0);
                 }
@@ -368,7 +375,7 @@ public class OverviewSentiment extends ActionBarActivity {
                 Float countneg = 0f;
                 Integer allsentences = 0;
                 Cursor res1 = mydb.countSentiment();
-                Cursor res2 = mydb.countAllSentences();
+                Cursor res2 = mydb.countAllSentencesStars();
                 while (res2.moveToNext()){
                     allsentences = res2.getInt(0);
                 }
@@ -428,6 +435,134 @@ public class OverviewSentiment extends ActionBarActivity {
 //
 //                for (int c : ColorTemplate.PASTEL_COLORS)
 //                    colors.add(c);
+
+                colors.add(ColorTemplate.getHoloBlue());
+                dataSet.setColors(colors);
+
+                //instantiate pie data object now
+
+                PieData data = new PieData(xVals, dataSet);
+                data.setValueFormatter(new PercentFormatter());
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.BLACK);
+
+                mChart.setData(data);
+                mChart.setDescription("");
+
+                //undo all highlights
+                mChart.highlightValues(null);
+
+                //update pie chart
+                mChart.invalidate();
+                //customize Legends
+                Legend legit = mChart.getLegend();
+                legit.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+                legit.setXEntrySpace(7);
+                legit.setYEntrySpace(5);
+
+            }
+        }
+        public void graphMethodStars() {
+            {
+                //textView.setText("This page is " + bundle.getInt("position"));
+                mChart = new PieChart(getActivity());
+                graphpage.addView(mChart);
+                graphpage.setBackgroundColor(Color.WHITE);
+
+                //configure pie chart
+                mChart.setUsePercentValues(true);
+
+                //enable hole and conigure
+
+
+                //enable rotation of the chart by touch
+                mChart.setRotationAngle(0);
+                mChart.setRotationEnabled(false);
+
+                //set a chart value selected listnerer
+                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+                        //display msg when value selected
+                        if (entry == null) {
+                            return;
+
+                        }
+                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" + new Integer((int) entry.getVal()), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNothingSelected() {
+
+                    }
+
+                });
+                ///
+                Float stars1 = 0f;
+                Float stars2 = 0f;
+                Float stars3 = 0f;
+                Float stars4 = 0f;
+                Float stars5 = 0f;
+                Integer allsentences = 0;
+                Cursor res1 = mydb.countStars();
+                Cursor res2 = mydb.countAllSentencesStars();
+                while (res2.moveToNext()){
+                    allsentences = res2.getInt(0);
+                }
+                while (res1.moveToNext()) {
+                    stars1 = res1.getFloat(0);
+                    stars2 = res1.getFloat(1);
+                    stars3 = res1.getFloat(2);
+                    stars4 = res1.getFloat(3);
+                    stars5 = res1.getFloat(4);
+
+                }
+
+                xData = new String[]{"1 STAR", "2 STAR", "3 STAR", "4 STAR", "5 STAR"};
+                yData = new Float[]{stars1, stars2, stars3, stars4, stars5};
+                mChart.setDrawHoleEnabled(true);
+                mChart.setHoleRadius(50);
+                mChart.setHoleColorTransparent(true);
+                mChart.setTransparentCircleRadius(60);
+                mChart.setTransparentCircleColor(Color.WHITE);
+                mChart.setCenterText(allsentences + "\nReviews");
+                mChart.setCenterTextColor(Color.BLACK);
+                mChart.setCenterTextSize(23);
+                mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
+                mChart.setDescription("");
+                mChart.setTouchEnabled(false);
+
+                ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+                for (int i = 0; i < yData.length; i++)
+                    yVals1.add(new Entry(yData[i], i));
+                ArrayList<String> xVals = new ArrayList<String>();
+
+                for (int i = 0; i < xData.length; i++)
+                    xVals.add(xData[i]);
+
+                //create pie data set
+
+                PieDataSet dataSet = new PieDataSet(yVals1, " ");
+                dataSet.setSliceSpace(3);
+                dataSet.setSelectionShift(5);
+
+                //add many colors
+                ArrayList<Integer> colors = new ArrayList<Integer>();
+//                colors.add(Color.rgb(0,191,255));
+//                colors.add(Color.rgb(255,247,140));
+//                colors.add(Color.rgb(255,69,0));
+//                colors.add(Color.RED);
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
 
                 colors.add(ColorTemplate.getHoloBlue());
                 dataSet.setColors(colors);
