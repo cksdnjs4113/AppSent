@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by CHANWON on 7/24/2015.
  */
@@ -48,15 +50,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL2, sentences);
         contentValues.put(COL3, date);
         long result = db.insert(TB_NAME, null, contentValues);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-
-        }
+        return result != -1;
     }
 
-    public boolean insertData1(String sentenceID, String happy ,String sad, String anger, String fear, String disgust, String surprise) {
+    public boolean insertData1(String sentenceID, String happy, String sad, String anger, String fear, String disgust, String surprise) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL4, sentenceID);
@@ -68,15 +65,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("SURPRISE", surprise);
 
         long result = db.insert(TB_NAME1, null, contentValues);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-
-        }
+        return result != -1;
     }
 
-    public boolean insertData2(String sentenceID, String vnegative, String negative, String neutral, String positive, String vpositive ) {
+    public boolean insertData2(String sentenceID, String vnegative, String negative, String neutral, String positive, String vpositive) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL4, sentenceID);
@@ -87,12 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("VNEGATIVE", vnegative);
 
         long result = db.insert(TB_NAME2, null, contentValues);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-
-        }
+        return result != -1;
     }
 
 
@@ -119,6 +106,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select sum(vnegative), sum(negative), sum(neutral), sum(positive), sum(vpositive) from sentiment_table", null);
         return res;
     }
+
     public Cursor countStars() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select sum(stars1), sum(stars2), sum(stars3), sum(stars4), sum(stars4) from stars_table", null);
@@ -130,6 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select distinct count(reviewid) from sentence_table", null);
         return res;
     }
+
     public Cursor countAllSentencesStars() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select count(*) from stars_table", null);
@@ -154,11 +143,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select month, sum(happy), sum(sad), sum(anger), sum(fear), sum(disgust), sum(surprise) from emotion_table group by month", null);
         return res;
     }
+
     public Cursor countTimeStars() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select month, sum(stars1), sum(stars2), sum(stars3), sum(stars4), sum(stars5) from stars_table group by month", null);
         return res;
     }
+
     public Cursor rankPositiveFeature() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
@@ -170,17 +161,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "order by count(nouns_table.sentenceid) DESC limit 10", null);
         return res;
     }
+
     public Cursor rankNegativeFeature() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
                 "FROM nouns_table \n" +
                 "INNER JOIN sentiment_table\n" +
                 "ON nouns_table.sentenceID=sentiment_table.sentenceid\n" +
-                "Where VNEGATIVE+NEGATIVE > 0.4\n" +
+                "Where VNEGATIVE+NEGATIVE > 0.4 \n" +
                 "Group by nouns_table.nouns\n" +
                 "order by count(nouns_table.sentenceid) DESC limit 10", null);
         return res;
     }
+
     public Cursor rankNeutralFeature() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
@@ -190,6 +183,76 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Where NEUTRAL > 0.4\n" +
                 "Group by nouns_table.nouns\n" +
                 "order by count(nouns_table.sentenceid) DESC limit 10", null);
+        return res;
+    }
+
+    public Cursor rankNeutralFeaturebyMonth(String month) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
+                "FROM nouns_table \n" +
+                "INNER JOIN sentiment_table\n" +
+                "ON nouns_table.sentenceID=sentiment_table.sentenceid\n" +
+                "Where NEUTRAL > 0.4 and month = '" + month + "'\n" +
+                "Group by nouns_table.nouns\n" +
+                "order by count(nouns_table.sentenceid) DESC limit 10", null);
+        return res;
+    }
+
+    public Cursor rankNegativeFeaturebyMonth(String month) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
+                "FROM nouns_table \n" +
+                "INNER JOIN sentiment_table\n" +
+                "ON nouns_table.sentenceID=sentiment_table.sentenceid\n" +
+                "Where VNEGATIVE+NEGATIVE > 0.4 and month = '" + month + "'\n" +
+                "Group by nouns_table.nouns\n" +
+                "order by count(nouns_table.sentenceid) DESC limit 10", null);
+        return res;
+    }
+
+    public Cursor rankPositiveFeaturebyMonth(String month) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT nouns_table.nouns , count(nouns_table.sentenceid)\n" +
+                "FROM nouns_table \n" +
+                "INNER JOIN sentiment_table\n" +
+                "ON nouns_table.sentenceID=sentiment_table.sentenceid\n" +
+                "Where VPOSITIVE+POSITIVE > 0.4 and month = '" + month + "'\n" +
+                "Group by nouns_table.nouns\n" +
+                "order by count(nouns_table.sentenceid) DESC limit 10", null);
+        return res;
+    }
+
+    public Cursor getMonthList() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select month from stars_table group by month", null);
+        return res;
+    }
+
+
+    public void insertTop10FeatureListPositive(ArrayList featurelist) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS positivefeaturetable");
+        db.execSQL("CREATE table positivefeaturetable (NOUN TEXT)");
+        for (int i = 0; i < featurelist.size(); i++) {
+            db.execSQL("insert into positivefeaturetable (NOUN) values ('" + featurelist.get(i) + "')");
+        }
+    }
+
+    public Cursor getlistedList(String tablename) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from " + tablename, null);
+        return res;
+    }
+
+    public Cursor getTimeLinePositiveRank(String noun) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT A.month, count(B.sentenceid)\n" +
+                "FROM sentiment_table A\n" +
+                "LEFT JOIN (select * FROM nouns_table where nouns='" + noun + "'  ) B\n" +
+                "ON A.sentenceID=B.sentenceid\n" +
+                "where A.vpositive+A.positive > 0.4\n" +
+                "Group by A.month\n" +
+                "order by A.month ASC", null);
         return res;
     }
 }

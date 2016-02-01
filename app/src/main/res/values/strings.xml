@@ -35,4 +35,5 @@
     </string-array>
     <string name="title_activity_timeline_popup_emo">TimelinePopupEmo</string>
     <string name="title_activity_timeline_popup_star">TimelinePopupStar</string>
+    <string name="title_activity_timeline_popup_pos_rank">TimelinePopupPosRank</string>
 </resources>
