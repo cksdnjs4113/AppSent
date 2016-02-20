@@ -19,11 +19,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chanwon.appsent.Activity.timeline.TimeLinePopup;
+import com.example.chanwon.appsent.Activity.timeline.TimelinePopupEmo;
+import com.example.chanwon.appsent.Activity.timeline.TimelinePopupStar;
 import com.example.chanwon.appsent.DAO.DatabaseHelper;
 import com.example.chanwon.appsent.NavigationDrawer;
 import com.example.chanwon.appsent.R;
@@ -107,44 +113,19 @@ public class OverviewSentiment extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class MyPagerAdapter extends FragmentPagerAdapter {
-        String[] tabs;
-
-        public MyPagerAdapter(FragmentManager fm) {
-            super(fm);
-            tabs = getResources().getStringArray(R.array.tabs);
-
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            MyFragment myFragment = MyFragment.getInstance(position);
-            return myFragment;
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tabs[position];
-        }
-    }
-
     public static class MyFragment extends Fragment {
 
 
-        private TextView textView, textView1;
-        private FrameLayout graphpage, graphpage1;
         PieChart mChart;
         Legend mLegend;
         BarChart mBarChart;
+        DatabaseHelper mydb;
+        private TextView textView, textView2, textView1;
+        private FrameLayout graphpage, graphpage1;
         private Button buttonTimeline;
         private String[] xData = {};
         private Float[] yData = {};
-        DatabaseHelper mydb;
+        private Spinner spinner;
 
         public static MyFragment getInstance(int position) {
             MyFragment myFragment = new MyFragment();
@@ -164,43 +145,103 @@ public class OverviewSentiment extends ActionBarActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View layout = inflater.inflate(R.layout.fragment_overviewsent, container, false);
+            View layout = inflater.inflate(R.layout.fragment_rankings, container, false);
             graphpage = (FrameLayout) layout.findViewById(R.id.graphframe);
             textView = (TextView) layout.findViewById(R.id.graphTitle);
-            textView1 = (TextView) layout.findViewById(R.id.textView3);
+            textView2 = (TextView) layout.findViewById(R.id.subTitle);
             buttonTimeline = (Button) layout.findViewById(R.id.buttonTimeline);
-
-
+            spinner = (Spinner) layout.findViewById(R.id.spinner);
+            spinner.setBackgroundColor(Color.LTGRAY);
             mydb = new DatabaseHelper(getActivity());
 
-            Bundle bundle = getArguments();
-            if (bundle != null) {
-                if (bundle.getInt("position") == 0) {
-                    textView.setText("Flutter");
-                    graphMethodStars();
-                    timeline();
+            final ArrayList<String> monthlist = new ArrayList<>();
+            monthlist.add("Overall");
+            monthlist.add("Last 4 Months");
+//            Cursor res1 = mydb.getMonthList();
+//            while (res1.moveToNext()) {
+//                monthlist.add("Last 4 Months");
+//            }
 
-                }
-                if (bundle.getInt("position") == 1) {
+//            final Bundle bundle1 = getArguments();
+            ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.values, monthlist);
+            spinner.setAdapter(adapter);
 
-                        textView.setText("Flutter");
-                    graphMethod();
-                        timeline();
 
-                }
-                if (bundle.getInt("position") == 2) {
-                    textView.setText("Flutter");
-                    try {
-                        graphMethodForEmotion();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Bundle bundle1 = getArguments();
+                    if (bundle1 != null) {
+                        if (bundle1.getInt("position") == 0) {
+                            graphpage.removeAllViews();
+                            textView.setText("Flutter");
+                            textView2.setText("Overall Star Percentages");
+                            String monthName = monthlist.get(position);
+                            graphMethodStars(monthName);
+                            timeline();
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 1) {
+                            graphpage.removeAllViews();
+                            textView.setText("Flutter");
+                            textView2.setText("Overall Sentiment Percentages");
+                            String monthName = monthlist.get(position);
+                            graphMethod(monthName);
+                            timeline();
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 2) {
+                            graphpage.removeAllViews();
+                            textView.setText("Flutter");
+                            textView2.setText("Overall Emotion Percentages");
+                            String monthName = monthlist.get(position);
+                            try {
+                                graphMethodForEmotion(monthName);
+                                timeline();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // timeline();
+
+                        }
                     }
-                    timeline();
-                    //GraphBoth();
-                    //timeline();
+
                 }
 
-            }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    Bundle bundle1 = getArguments();
+                    if (bundle1 != null) {
+                        if (bundle1.getInt("position") == 0) {
+                            textView.setText("Flutter");
+                            textView2.setText("Overall Stars Percentages");
+                            graphMethodStars("Overall");
+                            timeline();
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 1) {
+                            textView.setText("Flutter");
+                            textView2.setText("Overall Sentiment Percentages");
+                            graphMethod("Overall");
+                            timeline();
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 2) {
+                            textView.setText("Flutter");
+                            textView2.setText("Overall Emotion Percentages");
+                            try {
+                                graphMethodForEmotion("Overall");
+                                timeline();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // timeline();
+
+                        }
+                    }
+
+                }
+            });
             return layout;
         }
 
@@ -222,7 +263,7 @@ public class OverviewSentiment extends ActionBarActivity {
             );
         }
 
-        public void graphMethodForEmotion() throws IOException {
+        public void graphMethodForEmotion(String position) throws IOException {
             {
                 //textView.setText("This page is " + bundle.getInt("position"));
                 mChart = new PieChart(getActivity());
@@ -267,20 +308,36 @@ public class OverviewSentiment extends ActionBarActivity {
                 Float countfear = 0f;
                 Float countdisgust = 0f;
                 Float countsurprise = 0f;
-
-                int allsentences= 0;
-                Cursor res1 = mydb.countEmotion();
-                Cursor res2 = mydb.countAllSentencesStars();
-                while (res2.moveToNext()){
-                    allsentences = res2.getInt(0);
-                }
-                while (res1.moveToNext()) {
-                    counthappy = res1.getFloat(0);
-                    countsad = res1.getFloat(1);
-                    countanger = res1.getFloat(2);
-                    countfear = res1.getFloat(3);
-                    countdisgust = res1.getFloat(4);
-                    countsurprise = res1.getFloat(5);
+                ArrayList<String> last4month = new ArrayList();
+                int allsentences = 0;
+                if (position.equals("Overall")) {
+                    Cursor res1 = mydb.countEmotion();
+                    Cursor res2 = mydb.countAllSentencesStars();
+                    while (res2.moveToNext()) {
+                        allsentences = res2.getInt(0);
+                    }
+                    while (res1.moveToNext()) {
+                        counthappy = res1.getFloat(0);
+                        countsad = res1.getFloat(1);
+                        countanger = res1.getFloat(2);
+                        countfear = res1.getFloat(3);
+                        countdisgust = res1.getFloat(4);
+                        countsurprise = res1.getFloat(5);
+                    }
+                } else {
+                    Cursor res1 = mydb.countEmotionforMonth();
+                    Cursor res2 = mydb.countAllSentencesStarsbyMonth();
+                    while (res2.moveToNext()) {
+                        allsentences = res2.getInt(0);
+                    }
+                    while (res1.moveToNext()) {
+                        counthappy = res1.getFloat(0);
+                        countsad = res1.getFloat(1);
+                        countanger = res1.getFloat(2);
+                        countfear = res1.getFloat(3);
+                        countdisgust = res1.getFloat(4);
+                        countsurprise = res1.getFloat(5);
+                    }
                 }
 
 
@@ -332,7 +389,7 @@ public class OverviewSentiment extends ActionBarActivity {
             }
         }
 
-        public void graphMethod() {
+        public void graphMethod(String position) {
             {
                 //textView.setText("This page is " + bundle.getInt("position"));
                 mChart = new PieChart(getActivity());
@@ -374,21 +431,40 @@ public class OverviewSentiment extends ActionBarActivity {
                 Float countneu = 0f;
                 Float countneg = 0f;
                 Integer allsentences = 0;
-                Cursor res1 = mydb.countSentiment();
-                Cursor res2 = mydb.countAllSentencesStars();
-                while (res2.moveToNext()){
-                    allsentences = res2.getInt(0);
-                }
-                while (res1.moveToNext()) {
-                    countvneg = res1.getFloat(0);
-                    countneg = res1.getFloat(1);
-                    countneu = res1.getFloat(2);
-                    countpos = res1.getFloat(3);
-                    countvpos = res1.getFloat(4);
+                if (position.equals("Overall")) {
+                    Cursor res1 = mydb.countSentiment();
+                    Cursor res2 = mydb.countAllSentencesStars();
+                    while (res2.moveToNext()) {
+                        allsentences = res2.getInt(0);
+                    }
+                    while (res1.moveToNext()) {
+                        countvneg = res1.getFloat(0);
+                        countneg = res1.getFloat(1);
+                        countneu = res1.getFloat(2);
+                        countpos = res1.getFloat(3);
+                        countvpos = res1.getFloat(4);
 
-                    countpos = countpos+countvpos;
-                    countneg = countneg+countvneg;
+                        countpos = countpos + countvpos;
+                        countneg = countneg + countvneg;
+                    }
+                } else {
+                    Cursor res1 = mydb.countSentimentbyMonth();
+                    Cursor res2 = mydb.countAllSentencesStarsbyMonth();
+                    while (res2.moveToNext()) {
+                        allsentences = res2.getInt(0);
+                    }
+                    while (res1.moveToNext()) {
+                        countvneg = res1.getFloat(0);
+                        countneg = res1.getFloat(1);
+                        countneu = res1.getFloat(2);
+                        countpos = res1.getFloat(3);
+                        countvpos = res1.getFloat(4);
+
+                        countpos = countpos + countvpos;
+                        countneg = countneg + countvneg;
+                    }
                 }
+
 
                 xData = new String[]{"Positive", "Neutral", "Negative"};
                 yData = new Float[]{countpos, countneu, countneg};
@@ -420,9 +496,9 @@ public class OverviewSentiment extends ActionBarActivity {
 
                 //add many colors
                 ArrayList<Integer> colors = new ArrayList<Integer>();
-                colors.add(Color.rgb(0,191,255));
-                colors.add(Color.rgb(255,247,140));
-                colors.add(Color.rgb(255,69,0));
+                colors.add(Color.rgb(0, 191, 255));
+                colors.add(Color.rgb(255, 247, 140));
+                colors.add(Color.rgb(255, 69, 0));
 //                colors.add(Color.RED);
 //                for (int c : ColorTemplate.VORDIPLOM_COLORS)
 //                    colors.add(c);
@@ -462,7 +538,8 @@ public class OverviewSentiment extends ActionBarActivity {
 
             }
         }
-        public void graphMethodStars() {
+
+        public void graphMethodStars(String position) {
             {
                 //textView.setText("This page is " + bundle.getInt("position"));
                 mChart = new PieChart(getActivity());
@@ -504,19 +581,36 @@ public class OverviewSentiment extends ActionBarActivity {
                 Float stars4 = 0f;
                 Float stars5 = 0f;
                 Integer allsentences = 0;
-                Cursor res1 = mydb.countStars();
-                Cursor res2 = mydb.countAllSentencesStars();
-                while (res2.moveToNext()){
-                    allsentences = res2.getInt(0);
-                }
-                while (res1.moveToNext()) {
-                    stars1 = res1.getFloat(0);
-                    stars2 = res1.getFloat(1);
-                    stars3 = res1.getFloat(2);
-                    stars4 = res1.getFloat(3);
-                    stars5 = res1.getFloat(4);
+                if (position.equals("Overall")) {
+                    Cursor res1 = mydb.countStars();
+                    Cursor res2 = mydb.countAllSentencesStars();
+                    while (res2.moveToNext()) {
+                        allsentences = res2.getInt(0);
+                    }
+                    while (res1.moveToNext()) {
+                        stars1 = res1.getFloat(0);
+                        stars2 = res1.getFloat(1);
+                        stars3 = res1.getFloat(2);
+                        stars4 = res1.getFloat(3);
+                        stars5 = res1.getFloat(4);
 
+                    }
+                } else {
+                    Cursor res1 = mydb.countStarsbyMonth();
+                    Cursor res2 = mydb.countAllSentencesStarsbyMonth();
+                    while (res2.moveToNext()) {
+                        allsentences = res2.getInt(0);
+                    }
+                    while (res1.moveToNext()) {
+                        stars1 = res1.getFloat(0);
+                        stars2 = res1.getFloat(1);
+                        stars3 = res1.getFloat(2);
+                        stars4 = res1.getFloat(3);
+                        stars5 = res1.getFloat(4);
+
+                    }
                 }
+
 
                 xData = new String[]{"1 STAR", "2 STAR", "3 STAR", "4 STAR", "5 STAR"};
                 yData = new Float[]{stars1, stars2, stars3, stars4, stars5};
@@ -591,6 +685,32 @@ public class OverviewSentiment extends ActionBarActivity {
             }
         }
 
+    }
+
+    class MyPagerAdapter extends FragmentPagerAdapter {
+        String[] tabs;
+
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+            tabs = getResources().getStringArray(R.array.tabs);
+
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            MyFragment myFragment = MyFragment.getInstance(position);
+            return myFragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabs[position];
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.chanwon.appsent.Activity;
+package com.example.chanwon.appsent.Activity.timeline;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -27,9 +27,9 @@ import java.util.List;
  */
 public class TimeLinePopup extends Activity {
 
+    DatabaseHelper mydb;
     private FrameLayout mainLayout;
     private LineChart mLineChart;
-    DatabaseHelper mydb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

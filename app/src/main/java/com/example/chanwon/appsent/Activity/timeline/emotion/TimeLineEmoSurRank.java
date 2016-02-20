@@ -1,4 +1,4 @@
-package com.example.chanwon.appsent.Activity;
+package com.example.chanwon.appsent.Activity.timeline.emotion;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by CHANWON on 7/31/2015.
  */
-public class TimeLineSentPosRank extends Activity {
+public class TimeLineEmoSurRank extends Activity {
 
     DatabaseHelper mydb;
     private FrameLayout mainLayout;
@@ -105,6 +105,7 @@ public class TimeLineSentPosRank extends Activity {
         x1.setTextColor(Color.BLACK);
         x1.setDrawGridLines(true);
         x1.setAvoidFirstLastClipping(true);
+        x1.setTextSize(8);
 
 
         YAxis y1 = mLineChart.getAxisLeft();
@@ -125,9 +126,22 @@ public class TimeLineSentPosRank extends Activity {
     }
 
     private void AddEntry() {
-        Cursor positivelistedlist = mydb.getlistedList("positivefeaturetable");
+        Cursor positivelistedlist = mydb.getlistedList("surprisefeaturetable");
         ArrayList<String> rankedList = new ArrayList<>();
         ArrayList<String> xVariables = new ArrayList<>();
+        ArrayList<String> xVariables2 = new ArrayList<>();
+        ArrayList<String> xVariables3 = new ArrayList<>();
+
+        ArrayList<Entry> rank12 = new ArrayList<>();
+        ArrayList<Entry> rank22 = new ArrayList<>();
+        ArrayList<Entry> rank32 = new ArrayList<>();
+        ArrayList<Entry> rank42 = new ArrayList<>();
+        ArrayList<Entry> rank52 = new ArrayList<>();
+        ArrayList<Entry> rank62 = new ArrayList<>();
+        ArrayList<Entry> rank72 = new ArrayList<>();
+        ArrayList<Entry> rank82 = new ArrayList<>();
+        ArrayList<Entry> rank92 = new ArrayList<>();
+        ArrayList<Entry> rank102 = new ArrayList<>();
 
         ArrayList<Entry> rank1 = new ArrayList<>();
         ArrayList<Entry> rank2 = new ArrayList<>();
@@ -140,55 +154,120 @@ public class TimeLineSentPosRank extends Activity {
         ArrayList<Entry> rank9 = new ArrayList<>();
         ArrayList<Entry> rank10 = new ArrayList<>();
 
-        while (positivelistedlist.moveToNext()) {
-            rankedList.add(positivelistedlist.getString(0));
-        }
-
 
         Cursor res5 = mydb.getMonthList();
         while (res5.moveToNext()) {
             xVariables.add(res5.getString(0));
         }
 
-        for (int j = 0; j < rankedList.size(); j++) {
-            Cursor res4 = mydb.getTimeLinePositiveRank(rankedList.get(j));
-            System.out.println(rankedList.get(j));
-            int indexEnt = 0;
-            while (res4.moveToNext()) {
-                if (j == 0) {
-                    rank1.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 1) {
-                    rank2.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 2) {
-                    rank3.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 3) {
-                    rank4.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 4) {
-                    rank5.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 5) {
-                    rank6.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 6) {
-                    rank7.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 7) {
-                    rank8.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 8) {
-                    rank9.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                } else if (j == 9) {
-                    rank10.add(new Entry(res4.getInt(1), indexEnt));
-                    indexEnt++;
-                }
-            }
-
+        while (positivelistedlist.moveToNext()) {
+            rankedList.add(positivelistedlist.getString(0));
         }
+        if (rankedList.get(rankedList.size() - 1).equals("Overall")) {
+            xVariables2 = new ArrayList<>(xVariables);
+            for (int j = 0; j < rankedList.size(); j++) {
+                Cursor res4 = mydb.getTimeLineSurpriseRank(rankedList.get(j));
+                System.out.println(rankedList.get(j));
+                int indexEnt = 0;
+                while (res4.moveToNext()) {
+                    if (j == 0) {
+                        rank12.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 1) {
+                        rank22.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 2) {
+                        rank32.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 3) {
+                        rank42.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 4) {
+                        rank52.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 5) {
+                        rank62.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 6) {
+                        rank72.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 7) {
+                        rank82.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 8) {
+                        rank92.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 9) {
+                        rank102.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    }
+                }
+
+            }
+            rank1 = new ArrayList<>(rank12);
+            rank2 = new ArrayList<>(rank22);
+            rank3 = new ArrayList<>(rank32);
+            rank4 = new ArrayList<>(rank42);
+            rank5 = new ArrayList<>(rank52);
+            rank6 = new ArrayList<>(rank62);
+            rank7 = new ArrayList<>(rank72);
+            rank8 = new ArrayList<>(rank82);
+            rank9 = new ArrayList<>(rank92);
+            rank10 = new ArrayList<>(rank102);
+
+        } else {
+            xVariables2 = new ArrayList<>((xVariables.subList(xVariables.size() - 4, xVariables.size())));
+            for (int j = 0; j < rankedList.size(); j++) {
+                Cursor res4 = mydb.getTimeLineSurpriseRank(rankedList.get(j));
+                System.out.println(rankedList.get(j));
+                int indexEnt = 4 - xVariables.size();
+                while (res4.moveToNext()) {
+                    if (j == 0) {
+                        rank12.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 1) {
+                        rank22.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 2) {
+                        rank32.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 3) {
+                        rank42.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 4) {
+                        rank52.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 5) {
+                        rank62.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 6) {
+                        rank72.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 7) {
+                        rank82.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 8) {
+                        rank92.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    } else if (j == 9) {
+                        rank102.add(new Entry(res4.getInt(1), indexEnt));
+                        indexEnt++;
+                    }
+                }
+
+            }
+            rank1 = new ArrayList<>(rank12.subList(rank12.size() - 4, rank12.size()));
+            rank2 = new ArrayList<>(rank22.subList(rank12.size() - 4, rank22.size()));
+            rank3 = new ArrayList<>(rank32.subList(rank12.size() - 4, rank32.size()));
+            rank4 = new ArrayList<>(rank42.subList(rank12.size() - 4, rank42.size()));
+            rank5 = new ArrayList<>(rank52.subList(rank12.size() - 4, rank52.size()));
+            rank6 = new ArrayList<>(rank62.subList(rank12.size() - 4, rank62.size()));
+            rank7 = new ArrayList<>(rank72.subList(rank12.size() - 4, rank72.size()));
+            rank8 = new ArrayList<>(rank82.subList(rank12.size() - 4, rank82.size()));
+            rank9 = new ArrayList<>(rank92.subList(rank12.size() - 4, rank92.size()));
+            rank10 = new ArrayList<>(rank102.subList(rank12.size() - 4, rank102.size()));
+        }
+
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
@@ -372,7 +451,7 @@ public class TimeLineSentPosRank extends Activity {
         list.add(dataset10);
 
 
-        LineData data3 = new LineData(xVariables, list);
+        LineData data3 = new LineData(xVariables2, list);
 
         mLineChart.setData(data3);
 

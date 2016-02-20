@@ -19,15 +19,6 @@
         <activity
             android:name=".Activity.HomePage"
             android:label="@string/title_activity_sub_page">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Activity.LoginPage" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Activity.OverviewSentiment"
@@ -36,18 +27,94 @@
             android:name=".Activity.RankingFeatures"
             android:label="@string/title_activity_feature_ranking" />
         <activity
-            android:name=".Activity.TimeLinePopup"
-            android:theme="@style/AppTheme.CustomTheme" />
-        <activity
-            android:name=".Activity.TimelinePopupEmo"
-            android:label="@string/title_activity_timeline_popup_emo"
-            android:theme="@style/AppTheme.CustomTheme" />
-        <activity
-            android:name=".Activity.TimelinePopupStar"
+            android:name=".Activity.timeline.emotion.network.NetworkPositive"
             android:label="@string/title_activity_timeline_popup_star"
             android:theme="@style/AppTheme.CustomTheme"></activity>
         <activity
-            android:name=".Activity.TimeLineSentPosRank"
+            android:name=".Activity.timeline.emotion.network.NetworkNeutral"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.network.NetworkNegative"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+
+
+        <activity
+            android:name=".Activity.timeline.emotion.network.NetworkHappy"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.network.NetworkSad"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.network.NetworkAnger"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.network.NetworkFear"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.network.NetworkDisgust"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.network.NetworkSurprise"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+
+
+        <activity
+            android:name=".Activity.RankingFeaturesEmo"
+            android:label="@string/title_activity_feature_ranking_emo" />
+        <activity
+            android:name=".Activity.timeline.TimeLinePopup"
+            android:theme="@style/AppTheme.CustomTheme" />
+        <activity
+            android:name=".Activity.timeline.TimelinePopupEmo"
+            android:label="@string/title_activity_timeline_popup_emo"
+            android:theme="@style/AppTheme.CustomTheme" />
+        <activity
+            android:name=".Activity.timeline.TimelinePopupStar"
+            android:label="@string/title_activity_timeline_popup_star"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.TimeLineSentPosRank"
+            android:label="@string/title_activity_timeline_popup_pos_rank"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.TimeLineSentNeuRank"
+            android:label="@string/title_activity_timeline_popup_pos_rank"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.TimeLineSentNegRank"
+            android:label="@string/title_activity_timeline_popup_pos_rank"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+
+        <activity
+            android:name=".Activity.timeline.emotion.TimeLineEmoHapRank"
+            android:label="@string/title_activity_timeline_popup_pos_rank"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.TimeLineEmoSadRank"
+            android:label="@string/title_activity_timeline_popup_pos_rank"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.TimeLineEmoAngRank"
+            android:label="@string/title_activity_timeline_popup_pos_rank"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.TimeLineEmoFeaRank"
+            android:label="@string/title_activity_timeline_popup_pos_rank"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.TimeLineEmoDisRank"
+            android:label="@string/title_activity_timeline_popup_pos_rank"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
+        <activity
+            android:name=".Activity.timeline.emotion.TimeLineEmoSurRank"
             android:label="@string/title_activity_timeline_popup_pos_rank"
             android:theme="@style/AppTheme.CustomTheme"></activity>
     </application>

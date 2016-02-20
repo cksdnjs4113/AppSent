@@ -26,12 +26,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.chanwon.appsent.Activity.timeline.TimeLineSentNegRank;
-import com.example.chanwon.appsent.Activity.timeline.TimeLineSentNeuRank;
-import com.example.chanwon.appsent.Activity.timeline.TimeLineSentPosRank;
-import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkNegative;
-import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkNeutral;
-import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkPositive;
+import com.example.chanwon.appsent.Activity.timeline.emotion.TimeLineEmoAngRank;
+import com.example.chanwon.appsent.Activity.timeline.emotion.TimeLineEmoDisRank;
+import com.example.chanwon.appsent.Activity.timeline.emotion.TimeLineEmoFeaRank;
+import com.example.chanwon.appsent.Activity.timeline.emotion.TimeLineEmoHapRank;
+import com.example.chanwon.appsent.Activity.timeline.emotion.TimeLineEmoSadRank;
+import com.example.chanwon.appsent.Activity.timeline.emotion.TimeLineEmoSurRank;
+import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkAnger;
+import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkDisgust;
+import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkFear;
+import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkHappy;
+import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkSad;
+import com.example.chanwon.appsent.Activity.timeline.emotion.network.NetworkSurprise;
 import com.example.chanwon.appsent.DAO.DatabaseHelper;
 import com.example.chanwon.appsent.NavigationDrawer;
 import com.example.chanwon.appsent.R;
@@ -55,7 +61,7 @@ import java.util.ArrayList;
 //import com.example.chanwon.appsent.Analytics.SentimentTool;
 
 
-public class RankingFeatures extends ActionBarActivity {
+public class RankingFeaturesEmo extends ActionBarActivity {
     DatabaseHelper mydb;
     private Toolbar toolbar;
     private ViewPager mPager;
@@ -155,6 +161,7 @@ public class RankingFeatures extends ActionBarActivity {
             textView1 = (TextView) layout.findViewById(R.id.subTitle);
             buttonTimeline = (Button) layout.findViewById(R.id.buttonTimeline);
             btnCoocur = (Button) layout.findViewById(R.id.btnCooccur);
+
             spinner = (Spinner) layout.findViewById(R.id.spinner);
             spinner.setBackgroundColor(Color.LTGRAY);
             mydb = new DatabaseHelper(getActivity());
@@ -163,9 +170,9 @@ public class RankingFeatures extends ActionBarActivity {
             monthlist.add("Overall");
             monthlist.add("Last 4 Months");
 //            Cursor res1 = mydb.getMonthList();
-//            while (res1.moveToNext()) {
-//                monthlist.add("Last 4 Months");
-//            }
+////            while (res1.moveToNext()) {
+////                monthlist.add(res1.getString(0));
+////            }
 
 //            final Bundle bundle1 = getArguments();
             ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.values, monthlist);
@@ -177,11 +184,11 @@ public class RankingFeatures extends ActionBarActivity {
                     if (bundle1 != null) {
                         if (bundle1.getInt("position") == 0) {
                             graphpage.removeAllViews();
-                            textView.setText("Positive");
+                            textView.setText("Happy");
                             textView1.setText("Top 10 Repeated Features");
                             String monthName = monthlist.get(position);
                             try {
-                                graphForPositive(monthName);
+                                graphForHappy(monthName);
                                 timeline();
                                 network();
                             } catch (IOException e) {
@@ -191,11 +198,25 @@ public class RankingFeatures extends ActionBarActivity {
 
                         } else if (bundle1.getInt("position") == 1) {
                             graphpage.removeAllViews();
-                            textView.setText("Neutral");
+                            textView.setText("Sad");
                             textView1.setText("Top 10 Repeated Features");
                             String monthName = monthlist.get(position);
                             try {
-                                graphForNeutral(monthName);
+                                graphForSad(monthName);
+                                timeline();
+                                network();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 2) {
+                            graphpage.removeAllViews();
+                            textView.setText("Anger");
+                            textView1.setText("Top 10 Repeated Features");
+                            String monthName = monthlist.get(position);
+                            try {
+                                graphForAnger(monthName);
                                 timeline();
                                 network();
 
@@ -204,13 +225,43 @@ public class RankingFeatures extends ActionBarActivity {
                             }
                             // timeline();
 
-                        } else if (bundle1.getInt("position") == 2) {
+                        } else if (bundle1.getInt("position") == 3) {
                             graphpage.removeAllViews();
-                            textView.setText("Negative");
+                            textView.setText("Fear");
                             textView1.setText("Top 10 Repeated Features");
                             String monthName = monthlist.get(position);
                             try {
-                                graphForNegative(monthName);
+                                graphForFear(monthName);
+                                timeline();
+                                network();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 4) {
+                            graphpage.removeAllViews();
+                            textView.setText("Disgust");
+                            textView1.setText("Top 10 Repeated Features");
+                            String monthName = monthlist.get(position);
+                            try {
+                                graphForDisgust(monthName);
+                                timeline();
+                                network();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 5) {
+                            graphpage.removeAllViews();
+                            textView.setText("Surprise");
+                            textView1.setText("Top 10 Repeated Features");
+                            String monthName = monthlist.get(position);
+                            try {
+                                graphForSurprise(monthName);
                                 timeline();
                                 network();
 
@@ -229,36 +280,78 @@ public class RankingFeatures extends ActionBarActivity {
                     Bundle bundle1 = getArguments();
                     if (bundle1 != null) {
                         if (bundle1.getInt("position") == 0) {
-                            textView.setText("Flutter");
-                            textView1.setText("Top 10 Repeated Features in Positive");
+                            textView.setText("Happy");
+                            textView1.setText("Top 10 Repeated Features");
                             try {
-                                graphForPositive("Overall");
+                                graphForHappy("Overall");
                                 timeline();
                                 network();
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             // timeline();
 
                         } else if (bundle1.getInt("position") == 1) {
-                            textView.setText("Flutter");
-                            textView1.setText("Top 10 Repeated Features in Neutral");
+                            textView.setText("Sad");
+                            textView1.setText("Top 10 Repeated Features");
                             try {
-                                graphForNeutral("Overall");
+                                graphForSad("Overall");
                                 timeline();
                                 network();
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             // timeline();
 
                         } else if (bundle1.getInt("position") == 2) {
-                            textView.setText("Flutter");
-                            textView1.setText("Top 10 Repeated Features in Negative");
+                            textView.setText("Anger");
+                            textView1.setText("Top 10 Repeated Features");
                             try {
-                                graphForNegative("Overall");
+                                graphForAnger("Overall");
                                 timeline();
                                 network();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 3) {
+                            textView.setText("Fear");
+                            textView1.setText("Top 10 Repeated Features");
+                            try {
+                                graphForFear("Overall");
+                                timeline();
+                                network();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 4) {
+                            textView.setText("Disgust");
+                            textView1.setText("Top 10 Repeated Features");
+                            try {
+                                graphForDisgust("Overall");
+                                timeline();
+                                network();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // timeline();
+
+                        } else if (bundle1.getInt("position") == 5) {
+                            textView.setText("Surprise");
+                            textView1.setText("Top 10 Repeated Features");
+                            try {
+                                graphForSurprise("Overall");
+                                timeline();
+                                network();
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -281,11 +374,17 @@ public class RankingFeatures extends ActionBarActivity {
                         public void onClick(View v) {
                             Bundle bundle = getArguments();
                             if (bundle.getInt("position") == 0) {
-                                startActivity(new Intent(getActivity(), TimeLineSentPosRank.class));
+                                startActivity(new Intent(getActivity(), TimeLineEmoHapRank.class));
                             } else if (bundle.getInt("position") == 1) {
-                                startActivity(new Intent(getActivity(), TimeLineSentNeuRank.class));
+                                startActivity(new Intent(getActivity(), TimeLineEmoSadRank.class));
                             } else if (bundle.getInt("position") == 2) {
-                                startActivity(new Intent(getActivity(), TimeLineSentNegRank.class));
+                                startActivity(new Intent(getActivity(), TimeLineEmoAngRank.class));
+                            } else if (bundle.getInt("position") == 3) {
+                                startActivity(new Intent(getActivity(), TimeLineEmoFeaRank.class));
+                            } else if (bundle.getInt("position") == 4) {
+                                startActivity(new Intent(getActivity(), TimeLineEmoDisRank.class));
+                            } else if (bundle.getInt("position") == 5) {
+                                startActivity(new Intent(getActivity(), TimeLineEmoSurRank.class));
                             }
                         }
                     }
@@ -299,147 +398,25 @@ public class RankingFeatures extends ActionBarActivity {
                         public void onClick(View v) {
                             Bundle bundle = getArguments();
                             if (bundle.getInt("position") == 0) {
-                                startActivity(new Intent(getActivity(), NetworkPositive.class));
+                                startActivity(new Intent(getActivity(), NetworkHappy.class));
                             } else if (bundle.getInt("position") == 1) {
-                                startActivity(new Intent(getActivity(), NetworkNeutral.class));
+                                startActivity(new Intent(getActivity(), NetworkSad.class));
                             } else if (bundle.getInt("position") == 2) {
-                                startActivity(new Intent(getActivity(), NetworkNegative.class));
+                                startActivity(new Intent(getActivity(), NetworkAnger.class));
+                            } else if (bundle.getInt("position") == 3) {
+                                startActivity(new Intent(getActivity(), NetworkFear.class));
+                            } else if (bundle.getInt("position") == 4) {
+                                startActivity(new Intent(getActivity(), NetworkDisgust.class));
+                            } else if (bundle.getInt("position") == 5) {
+                                startActivity(new Intent(getActivity(), NetworkSurprise.class));
                             }
                         }
                     }
             );
         }
-        public void graphForNeutral(String position) throws IOException {
-            {
-                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-                ArrayList<String> xVals1 = new ArrayList<String>();
-                ArrayList<String> xVals2 = new ArrayList<String>();
-                final ArrayList<String> xDat = new ArrayList<>();
-
-                if (position.equals("Overall")) {
-                    yVals1 = new ArrayList<BarEntry>();
-                    xVals1 = new ArrayList<String>();
 
 
-                    int allsentences = 0;
-                    Cursor res1 = mydb.rankNeutralFeature();
-                    int indexnumber = 9;
-                    while (res1.moveToNext()) {
-                        xVals1.add(res1.getString(0));
-                        xDat.add(res1.getString(0));
-                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
-                        indexnumber--;
-                    }
-                    xVals2 = new ArrayList<String>();
-                    for (int j = yVals1.size() - 1; j >= 0; j--) {
-                        xVals2.add(xVals1.get(j));
-                    }
-
-                } else {
-                    yVals1 = new ArrayList<BarEntry>();
-                    xVals1 = new ArrayList<String>();
-
-                    int allsentences = 0;
-                    Cursor res1 = mydb.rankNeutralFeaturebyMonth(position);
-                    int indexnumber = 9;
-                    while (res1.moveToNext()) {
-                        xVals1.add(res1.getString(0));
-                        xDat.add(res1.getString(0));
-                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
-                        indexnumber--;
-                    }
-                    xVals2 = new ArrayList<String>();
-                    for (int j = yVals1.size() - 1; j >= 0; j--) {
-                        xVals2.add(xVals1.get(j));
-                    }
-                }
-                //textView.setText("This page is " + bundle.getInt("position"));
-                mChart = new HorizontalBarChart(getActivity());
-                mChart.setHighlightEnabled(false);
-                mChart.setDrawGridBackground(false);
-                graphpage.addView(mChart);
-                graphpage.setBackgroundColor(Color.WHITE);
-                //configure pie chart
-                //set a chart value selected listnerer
-                XAxis x1 = mChart.getXAxis();
-                x1.setPosition(XAxis.XAxisPosition.BOTTOM);
-                x1.setTextColor(Color.BLACK);
-                x1.setDrawGridLines(true);
-                x1.setAvoidFirstLastClipping(true);
-                x1.setDrawLabels(true);
-                x1.setDrawGridLines(false);
-                YAxis y1 = mChart.getAxisLeft();
-                y1.setEnabled(true);
-                y1.setDrawLabels(true);
-                y1.setTextSize(10);
-                y1.setDrawGridLines(false);
-                YAxis y2 = mChart.getAxisRight();
-                y2.setEnabled(false);
-                y2.setDrawLabels(false);
-                Legend u = mChart.getLegend();
-                u.setFormSize(0);
-                mChart.setTouchEnabled(false);
-                mChart.setDescription("");
-
-
-                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-                    @Override
-                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
-                        //display msg when value selected
-                        if (entry == null) {
-                            return;
-
-                        }
-                        for (int is = 0; is < xDat.size(); is++) {
-                            System.out.println("$$$$$$");
-                            System.out.println(xDat.get(is));
-                        }
-                        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%");
-                        System.out.println(entry.getXIndex());
-                        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%");
-                        Toast.makeText(getActivity(), xDat.get(entry.getXIndex()), Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    @Override
-                    public void onNothingSelected() {
-
-                    }
-
-                });
-                ///
-
-                //create pie data set
-                BarDataSet dataSet = new BarDataSet(yVals1, " ");
-
-                //add many colors
-                ArrayList<Integer> colors = new ArrayList<Integer>();
-                for (int c : ColorTemplate.VORDIPLOM_COLORS)
-                    colors.add(c);
-                for (int c : ColorTemplate.JOYFUL_COLORS)
-                    colors.add(c);
-                for (int c : ColorTemplate.COLORFUL_COLORS)
-                    colors.add(c);
-                for (int c : ColorTemplate.PASTEL_COLORS)
-                    colors.add(c);
-                colors.add(ColorTemplate.getHoloBlue());
-                dataSet.setColors(colors);
-                //instantiate pie data object now
-                BarData data = new BarData(xVals2, dataSet);
-                data.setValueTextSize(11f);
-                data.setValueTextColor(Color.BLACK);
-                mChart.setData(data);
-                //undo all highlights
-                mChart.highlightValues(null);
-                //update pie chart
-                mChart.invalidate();
-                xVals1.add(position);
-                mydb.insertTop10FeatureListPositive("neutralfeaturetable", xVals1);
-
-            }
-        }
-
-        public void graphForNegative(String position) throws IOException {
+        public void graphForHappy(String position) throws IOException {
             {
                 ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
                 ArrayList<String> xVals1 = new ArrayList<String>();
@@ -450,7 +427,12 @@ public class RankingFeatures extends ActionBarActivity {
                     xVals1 = new ArrayList<String>();
 
                     int allsentences = 0;
-                    Cursor res1 = mydb.rankNegativeFeature();
+
+
+                    //This
+                    Cursor res1 = mydb.rankHappyFeatrue();
+                    //
+                    //
                     int indexnumber = 9;
                     while (res1.moveToNext()) {
                         xVals1.add(res1.getString(0));
@@ -467,7 +449,14 @@ public class RankingFeatures extends ActionBarActivity {
                     xVals1 = new ArrayList<String>();
 
                     int allsentences = 0;
-                    Cursor res1 = mydb.rankNegativeFeaturebyMonth(position);
+
+
+                    ///
+                    Cursor res1 = mydb.rankHappyFeatureByMonth(position);
+                    //
+                    //
+                    //
+                    //
                     int indexnumber = 9;
                     while (res1.moveToNext()) {
                         xVals1.add(res1.getString(0));
@@ -506,6 +495,7 @@ public class RankingFeatures extends ActionBarActivity {
                 u.setFormSize(0);
                 mChart.setTouchEnabled(false);
                 mChart.setDescription("");
+
 
                 mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                     @Override
@@ -551,13 +541,12 @@ public class RankingFeatures extends ActionBarActivity {
                 //update pie chart
                 mChart.invalidate();
                 xVals1.add(position);
-                mydb.insertTop10FeatureListPositive("negativefaturetable", xVals1);
-
+                mydb.insertTop10FeatureListPositive("happyfeaturetable", xVals1);
 
             }
         }
 
-        public void graphForPositive(String position) throws IOException {
+        public void graphForSad(String position) throws IOException {
             {
                 ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
                 ArrayList<String> xVals1 = new ArrayList<String>();
@@ -568,7 +557,12 @@ public class RankingFeatures extends ActionBarActivity {
                     xVals1 = new ArrayList<String>();
 
                     int allsentences = 0;
-                    Cursor res1 = mydb.rankPositiveFeature();
+
+
+                    //This
+                    Cursor res1 = mydb.rankSadFeature();
+                    //
+                    //
                     int indexnumber = 9;
                     while (res1.moveToNext()) {
                         xVals1.add(res1.getString(0));
@@ -585,7 +579,14 @@ public class RankingFeatures extends ActionBarActivity {
                     xVals1 = new ArrayList<String>();
 
                     int allsentences = 0;
-                    Cursor res1 = mydb.rankPositiveFeaturebyMonth(position);
+
+
+                    ///
+                    Cursor res1 = mydb.rankSadFeatureByMonth(position);
+                    //
+                    //
+                    //
+                    //
                     int indexnumber = 9;
                     while (res1.moveToNext()) {
                         xVals1.add(res1.getString(0));
@@ -624,6 +625,7 @@ public class RankingFeatures extends ActionBarActivity {
                 u.setFormSize(0);
                 mChart.setTouchEnabled(false);
                 mChart.setDescription("");
+
 
                 mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                     @Override
@@ -669,10 +671,534 @@ public class RankingFeatures extends ActionBarActivity {
                 //update pie chart
                 mChart.invalidate();
                 xVals1.add(position);
-                mydb.insertTop10FeatureListPositive("positivefeaturetable", xVals1);
+
+                mydb.insertTop10FeatureListPositive("sadfeaturetable", xVals1);
 
             }
+        }
 
+        public void graphForAnger(String position) throws IOException {
+            {
+                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+                ArrayList<String> xVals1 = new ArrayList<String>();
+                ArrayList<String> xVals2 = new ArrayList<String>();
+
+                if (position.equals("Overall")) {
+                    yVals1 = new ArrayList<BarEntry>();
+                    xVals1 = new ArrayList<String>();
+
+                    int allsentences = 0;
+
+
+                    //This
+                    Cursor res1 = mydb.rankAngerFeatrue();
+                    //
+                    //
+                    int indexnumber = 9;
+                    while (res1.moveToNext()) {
+                        xVals1.add(res1.getString(0));
+                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                        indexnumber--;
+                    }
+                    xVals2 = new ArrayList<String>();
+                    for (int j = yVals1.size() - 1; j >= 0; j--) {
+                        xVals2.add(xVals1.get(j));
+                    }
+
+                } else {
+                    yVals1 = new ArrayList<BarEntry>();
+                    xVals1 = new ArrayList<String>();
+
+                    int allsentences = 0;
+
+
+                    ///
+                    Cursor res1 = mydb.rankAngerFeatureByMonth(position);
+                    //
+                    //
+                    //
+                    //
+                    int indexnumber = 9;
+                    while (res1.moveToNext()) {
+                        xVals1.add(res1.getString(0));
+                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                        indexnumber--;
+                    }
+                    xVals2 = new ArrayList<String>();
+                    for (int j = yVals1.size() - 1; j >= 0; j--) {
+                        xVals2.add(xVals1.get(j));
+                    }
+                }
+                //textView.setText("This page is " + bundle.getInt("position"));
+                mChart = new HorizontalBarChart(getActivity());
+                mChart.setHighlightEnabled(false);
+                mChart.setDrawGridBackground(false);
+                graphpage.addView(mChart);
+                graphpage.setBackgroundColor(Color.WHITE);
+                //configure pie chart
+                //set a chart value selected listnerer
+                XAxis x1 = mChart.getXAxis();
+                x1.setPosition(XAxis.XAxisPosition.BOTTOM);
+                x1.setTextColor(Color.BLACK);
+                x1.setDrawGridLines(true);
+                x1.setAvoidFirstLastClipping(true);
+                x1.setDrawLabels(true);
+                x1.setDrawGridLines(false);
+                YAxis y1 = mChart.getAxisLeft();
+                y1.setEnabled(true);
+                y1.setDrawLabels(true);
+                y1.setTextSize(10);
+                y1.setDrawGridLines(false);
+                YAxis y2 = mChart.getAxisRight();
+                y2.setEnabled(false);
+                y2.setDrawLabels(false);
+                Legend u = mChart.getLegend();
+                u.setFormSize(0);
+                mChart.setTouchEnabled(false);
+                mChart.setDescription("");
+
+
+                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+                        //display msg when value selected
+                        if (entry == null) {
+                            return;
+
+                        }
+                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" + new Integer((int) entry.getVal()), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNothingSelected() {
+
+                    }
+
+                });
+                ///
+
+                //create pie data set
+                BarDataSet dataSet = new BarDataSet(yVals1, " ");
+
+                //add many colors
+                ArrayList<Integer> colors = new ArrayList<Integer>();
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
+                colors.add(ColorTemplate.getHoloBlue());
+                dataSet.setColors(colors);
+                //instantiate pie data object now
+                BarData data = new BarData(xVals2, dataSet);
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.BLACK);
+                mChart.setData(data);
+                //undo all highlights
+                mChart.highlightValues(null);
+                //update pie chart
+                mChart.invalidate();
+                xVals1.add(position);
+
+                mydb.insertTop10FeatureListPositive("angerfeaturetable", xVals1);
+
+            }
+        }
+
+        public void graphForFear(String position) throws IOException {
+            {
+                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+                ArrayList<String> xVals1 = new ArrayList<String>();
+                ArrayList<String> xVals2 = new ArrayList<String>();
+
+                if (position.equals("Overall")) {
+                    yVals1 = new ArrayList<BarEntry>();
+                    xVals1 = new ArrayList<String>();
+
+                    int allsentences = 0;
+
+
+                    //This
+                    Cursor res1 = mydb.rankFearFeatrue();
+                    //
+                    //
+                    int indexnumber = 9;
+                    while (res1.moveToNext()) {
+                        xVals1.add(res1.getString(0));
+                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                        indexnumber--;
+                    }
+                    xVals2 = new ArrayList<String>();
+                    for (int j = yVals1.size() - 1; j >= 0; j--) {
+                        xVals2.add(xVals1.get(j));
+                    }
+
+                } else {
+                    yVals1 = new ArrayList<BarEntry>();
+                    xVals1 = new ArrayList<String>();
+
+                    int allsentences = 0;
+
+
+                    ///
+                    Cursor res1 = mydb.rankFearFeatureByMonth(position);
+                    //
+                    //
+                    //
+                    //
+                    int indexnumber = 9;
+                    while (res1.moveToNext()) {
+                        xVals1.add(res1.getString(0));
+                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                        indexnumber--;
+                    }
+                    xVals2 = new ArrayList<String>();
+                    for (int j = yVals1.size() - 1; j >= 0; j--) {
+                        xVals2.add(xVals1.get(j));
+                    }
+                }
+                //textView.setText("This page is " + bundle.getInt("position"));
+                mChart = new HorizontalBarChart(getActivity());
+                mChart.setHighlightEnabled(false);
+                mChart.setDrawGridBackground(false);
+                graphpage.addView(mChart);
+                graphpage.setBackgroundColor(Color.WHITE);
+                //configure pie chart
+                //set a chart value selected listnerer
+                XAxis x1 = mChart.getXAxis();
+                x1.setPosition(XAxis.XAxisPosition.BOTTOM);
+                x1.setTextColor(Color.BLACK);
+                x1.setDrawGridLines(true);
+                x1.setAvoidFirstLastClipping(true);
+                x1.setDrawLabels(true);
+                x1.setDrawGridLines(false);
+                YAxis y1 = mChart.getAxisLeft();
+                y1.setEnabled(true);
+                y1.setDrawLabels(true);
+                y1.setTextSize(10);
+                y1.setDrawGridLines(false);
+                YAxis y2 = mChart.getAxisRight();
+                y2.setEnabled(false);
+                y2.setDrawLabels(false);
+                Legend u = mChart.getLegend();
+                u.setFormSize(0);
+                mChart.setTouchEnabled(false);
+                mChart.setDescription("");
+
+
+                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+                        //display msg when value selected
+                        if (entry == null) {
+                            return;
+
+                        }
+                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" + new Integer((int) entry.getVal()), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNothingSelected() {
+
+                    }
+
+                });
+                ///
+
+                //create pie data set
+                BarDataSet dataSet = new BarDataSet(yVals1, " ");
+
+                //add many colors
+                ArrayList<Integer> colors = new ArrayList<Integer>();
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
+                colors.add(ColorTemplate.getHoloBlue());
+                dataSet.setColors(colors);
+                //instantiate pie data object now
+                BarData data = new BarData(xVals2, dataSet);
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.BLACK);
+                mChart.setData(data);
+                //undo all highlights
+                mChart.highlightValues(null);
+                //update pie chart
+                mChart.invalidate();
+                xVals1.add(position);
+
+                mydb.insertTop10FeatureListPositive("fearfeaturetable", xVals1);
+
+            }
+        }
+
+        public void graphForDisgust(String position) throws IOException {
+            {
+                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+                ArrayList<String> xVals1 = new ArrayList<String>();
+                ArrayList<String> xVals2 = new ArrayList<String>();
+
+                if (position.equals("Overall")) {
+                    yVals1 = new ArrayList<BarEntry>();
+                    xVals1 = new ArrayList<String>();
+
+                    int allsentences = 0;
+
+
+                    //This
+                    Cursor res1 = mydb.rankDisgustFeatrue();
+                    //
+                    //
+                    int indexnumber = 9;
+                    while (res1.moveToNext()) {
+                        xVals1.add(res1.getString(0));
+                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                        indexnumber--;
+                    }
+                    xVals2 = new ArrayList<String>();
+                    for (int j = yVals1.size() - 1; j >= 0; j--) {
+                        xVals2.add(xVals1.get(j));
+                    }
+
+                } else {
+                    yVals1 = new ArrayList<BarEntry>();
+                    xVals1 = new ArrayList<String>();
+
+                    int allsentences = 0;
+
+
+                    ///
+                    Cursor res1 = mydb.rankDisgustFeatureByMonth(position);
+                    //
+                    //
+                    //
+                    //
+                    int indexnumber = 9;
+                    while (res1.moveToNext()) {
+                        xVals1.add(res1.getString(0));
+                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                        indexnumber--;
+                    }
+                    xVals2 = new ArrayList<String>();
+                    for (int j = yVals1.size() - 1; j >= 0; j--) {
+                        xVals2.add(xVals1.get(j));
+                    }
+                }
+                //textView.setText("This page is " + bundle.getInt("position"));
+                mChart = new HorizontalBarChart(getActivity());
+                mChart.setHighlightEnabled(false);
+                mChart.setDrawGridBackground(false);
+                graphpage.addView(mChart);
+                graphpage.setBackgroundColor(Color.WHITE);
+                //configure pie chart
+                //set a chart value selected listnerer
+                XAxis x1 = mChart.getXAxis();
+                x1.setPosition(XAxis.XAxisPosition.BOTTOM);
+                x1.setTextColor(Color.BLACK);
+                x1.setDrawGridLines(true);
+                x1.setAvoidFirstLastClipping(true);
+                x1.setDrawLabels(true);
+                x1.setDrawGridLines(false);
+                YAxis y1 = mChart.getAxisLeft();
+                y1.setEnabled(true);
+                y1.setDrawLabels(true);
+                y1.setTextSize(10);
+                y1.setDrawGridLines(false);
+                YAxis y2 = mChart.getAxisRight();
+                y2.setEnabled(false);
+                y2.setDrawLabels(false);
+                Legend u = mChart.getLegend();
+                u.setFormSize(0);
+                mChart.setTouchEnabled(false);
+                mChart.setDescription("");
+
+
+                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+                        //display msg when value selected
+                        if (entry == null) {
+                            return;
+
+                        }
+                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" + new Integer((int) entry.getVal()), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNothingSelected() {
+
+                    }
+
+                });
+                ///
+
+                //create pie data set
+                BarDataSet dataSet = new BarDataSet(yVals1, " ");
+
+                //add many colors
+                ArrayList<Integer> colors = new ArrayList<Integer>();
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
+                colors.add(ColorTemplate.getHoloBlue());
+                dataSet.setColors(colors);
+                //instantiate pie data object now
+                BarData data = new BarData(xVals2, dataSet);
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.BLACK);
+                mChart.setData(data);
+                //undo all highlights
+                mChart.highlightValues(null);
+                //update pie chart
+                mChart.invalidate();
+                xVals1.add(position);
+
+                mydb.insertTop10FeatureListPositive("disgustfeaturetable", xVals1);
+
+            }
+        }
+
+        public void graphForSurprise(String position) throws IOException {
+            {
+                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+                ArrayList<String> xVals1 = new ArrayList<String>();
+                ArrayList<String> xVals2 = new ArrayList<String>();
+
+                if (position.equals("Overall")) {
+                    yVals1 = new ArrayList<BarEntry>();
+                    xVals1 = new ArrayList<String>();
+
+                    int allsentences = 0;
+
+
+                    //This
+                    Cursor res1 = mydb.rankSurpriseFeatrue();
+                    //
+                    //
+                    int indexnumber = 9;
+                    while (res1.moveToNext()) {
+                        xVals1.add(res1.getString(0));
+                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                        indexnumber--;
+                    }
+                    xVals2 = new ArrayList<String>();
+                    for (int j = yVals1.size() - 1; j >= 0; j--) {
+                        xVals2.add(xVals1.get(j));
+                    }
+
+                } else {
+                    yVals1 = new ArrayList<BarEntry>();
+                    xVals1 = new ArrayList<String>();
+
+                    int allsentences = 0;
+
+
+                    ///
+                    Cursor res1 = mydb.rankSurpriseFeatureByMonth(position);
+                    //
+                    //
+                    //
+                    //
+                    int indexnumber = 9;
+                    while (res1.moveToNext()) {
+                        xVals1.add(res1.getString(0));
+                        yVals1.add(new BarEntry(res1.getInt(1), indexnumber));
+                        indexnumber--;
+                    }
+                    xVals2 = new ArrayList<String>();
+                    for (int j = yVals1.size() - 1; j >= 0; j--) {
+                        xVals2.add(xVals1.get(j));
+                    }
+                }
+                //textView.setText("This page is " + bundle.getInt("position"));
+                mChart = new HorizontalBarChart(getActivity());
+                mChart.setHighlightEnabled(false);
+                mChart.setDrawGridBackground(false);
+                graphpage.addView(mChart);
+                graphpage.setBackgroundColor(Color.WHITE);
+                //configure pie chart
+                //set a chart value selected listnerer
+                XAxis x1 = mChart.getXAxis();
+                x1.setPosition(XAxis.XAxisPosition.BOTTOM);
+                x1.setTextColor(Color.BLACK);
+                x1.setDrawGridLines(true);
+                x1.setAvoidFirstLastClipping(true);
+                x1.setDrawLabels(true);
+                x1.setDrawGridLines(false);
+                YAxis y1 = mChart.getAxisLeft();
+                y1.setEnabled(true);
+                y1.setDrawLabels(true);
+                y1.setTextSize(10);
+                y1.setDrawGridLines(false);
+                YAxis y2 = mChart.getAxisRight();
+                y2.setEnabled(false);
+                y2.setDrawLabels(false);
+                Legend u = mChart.getLegend();
+                u.setFormSize(0);
+                mChart.setTouchEnabled(false);
+                mChart.setDescription("");
+
+
+                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+                        //display msg when value selected
+                        if (entry == null) {
+                            return;
+
+                        }
+                        Toast.makeText(getActivity(), xData[entry.getXIndex()] + "=" + new Integer((int) entry.getVal()), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNothingSelected() {
+
+                    }
+
+                });
+                ///
+
+                //create pie data set
+                BarDataSet dataSet = new BarDataSet(yVals1, " ");
+
+                //add many colors
+                ArrayList<Integer> colors = new ArrayList<Integer>();
+                for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.JOYFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.COLORFUL_COLORS)
+                    colors.add(c);
+                for (int c : ColorTemplate.PASTEL_COLORS)
+                    colors.add(c);
+                colors.add(ColorTemplate.getHoloBlue());
+                dataSet.setColors(colors);
+                //instantiate pie data object now
+                BarData data = new BarData(xVals2, dataSet);
+                data.setValueTextSize(11f);
+                data.setValueTextColor(Color.BLACK);
+                mChart.setData(data);
+                //undo all highlights
+                mChart.highlightValues(null);
+                //update pie chart
+                mChart.invalidate();
+                xVals1.add(position);
+
+                mydb.insertTop10FeatureListPositive("surprisefeaturetable", xVals1);
+
+            }
         }
 
     }
@@ -682,7 +1208,7 @@ public class RankingFeatures extends ActionBarActivity {
 
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
-            tabs = getResources().getStringArray(R.array.tabs1);
+            tabs = getResources().getStringArray(R.array.tabs2);
 
 
         }
@@ -695,7 +1221,7 @@ public class RankingFeatures extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 6;
         }
 
         @Override

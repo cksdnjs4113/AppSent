@@ -1,4 +1,4 @@
-package com.example.chanwon.appsent.Activity;
+package com.example.chanwon.appsent.Activity.timeline;
 
 import android.database.Cursor;
 import android.graphics.Color;
@@ -25,9 +25,9 @@ import java.util.List;
 public class TimelinePopupStar extends ActionBarActivity {
 
 
+    DatabaseHelper mydb;
     private FrameLayout mainLayout;
     private LineChart mLineChart;
-    DatabaseHelper mydb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

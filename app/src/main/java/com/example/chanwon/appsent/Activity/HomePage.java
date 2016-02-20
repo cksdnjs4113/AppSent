@@ -78,7 +78,7 @@ public class HomePage extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
 
-                        startActivity(new Intent(HomePage.this, RankingFeatures.class));
+                        startActivity(new Intent(HomePage.this, RankingFeaturesEmo.class));
                     }
                 }
         );
